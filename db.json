@@ -1,0 +1,75 @@
+{
+  "users": [
+    {
+      "name": "sam",
+      "email": "abc@gmail.com",
+      "password": "123456",
+      "role": "user",
+      "cart": [],
+      "wishlist": [],
+      "orders": [],
+      "isBlock": false
+    },
+    {
+      "id": "2665",
+      "name": "ashfaque",
+      "email": "asdf@gmail.com",
+      "password": "asdf123",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "orders": [],
+      "wishlist": []
+    },
+    {
+      "id": "27ad",
+      "name": "samadev",
+      "email": "sam@gmail.com",
+      "password": "sam123",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "orders": [],
+      "wishlist": []
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Cricket Bat",
+      "price": 1499,
+      "image": "https://contents.mediadecathlon.com/p2410170/90f68337a9ca3178966def5d8df2879d/p2410170.jpg?format=auto&quality=70&f=1024x0",
+      "category": "Cricket"
+    },
+    {
+      "id": 2,
+      "name": "Football",
+      "price": 999,
+      "image": "https://contents.mediadecathlon.com/p2571430/1ba21eaf5126f04614d7992fe0ec0eeb/p2571430.jpg?format=auto&quality=70&f=1024x0",
+      "category": "Football"
+    },
+    {
+      "id": 3,
+      "name": "Tennis Racket",
+      "price": 1999,
+      "image": "https://scssports.in/cdn/shop/files/Burn_Pro_PS13_Badminton_Racket_d1da6f79-7a3f-4161-961d-1d72abce3bac.jpg?v=1735299406",
+      "category": "Tennis"
+    },
+    {
+      "id": 4,
+      "name": "Basketball Shoes",
+      "price": 2999,
+      "image": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/279a502a-51ae-4fc6-ab72-ae014d350e2e/custom-nike-sabrina-2-by-you.png",
+      "category": "Basketball"
+    },
+    {
+      "id": 5,
+      "name": "Gym Gloves",
+      "price": 499,
+      "image": "https://contents.mediadecathlon.com/p2069799/57cbda153fce3b94698cbe07148dc4c4/p2069799.jpg?format=auto&quality=70&f=320x0",
+      "category": "Gym"
+    }
+  ]
+}
+    
+  
