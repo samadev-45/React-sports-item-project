@@ -1,12 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Signup from "./User/Signup";
 import Login from "./pages/Login";
-import Home from "./components/Home";
 import Products from "./pages/Products";
 import PrivateRoute from "./components/PrivateRoute";
 import Layout from "./components/Layout";
-import "./App.css";
+import LandingPage from "./pages/LandingPage";
 import ProductDetails from "./pages/ProductDetails";
+import "./App.css";
+import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   return (
@@ -20,7 +22,7 @@ function App() {
           element={
             <PrivateRoute>
               <Layout>
-                <Home />
+                <LandingPage />
               </Layout>
             </PrivateRoute>
           }
@@ -43,6 +45,27 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <ProductDetails />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Cart />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Wishlist />
               </Layout>
             </PrivateRoute>
           }

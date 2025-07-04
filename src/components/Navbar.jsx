@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/MyContext";
+import { FaHeart } from "react-icons/fa";
 
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -31,6 +32,7 @@ const Navbar = () => {
       {user ? (
         <div className="flex items-center gap-4">
           <span className="text-gray-700">Hi, {user.name}</span>
+          <Link to='/wishlist'><FaHeart size={20} color="red"/></Link>
           <button
             onClick={handleLogout}
             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"

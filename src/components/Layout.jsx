@@ -1,10 +1,10 @@
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar';
 
 const Layout = ({ children }) => {
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <div className="min-h-screen">{children}</div>
     </>
   );
 };
