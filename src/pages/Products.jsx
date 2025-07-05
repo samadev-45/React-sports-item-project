@@ -1,16 +1,20 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import {FaHeart} from 'react-icons/fa'
+import { FaHeart } from 'react-icons/fa';
 import { AuthContext } from '../context/MyContext';
-
+import { WishlistContext } from '../context/WishlistContext';
 
 
 const Products = () => {
   const [products, setProducts] = useState([]);
-  const { user } = useContext(AuthContext); 
-  
-  
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { user } = useContext(AuthContext);
+  const { wishlist, addToWishlist, removeFromWishlist } = useContext(WishlistContext);
 
   useEffect(() => {
     api.get("/products")
@@ -18,57 +22,113 @@ const Products = () => {
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
 
-  const addToWishlist = async (product) => {
-    if (!user?.id) return;
+  const filteredProducts = products.filter((item) => {
+    const matchCategory = category ? item.category.toLowerCase() === category.toLowerCase() : true;
+    const matchSubCategory = subCategory ? item.name.toLowerCase().includes(subCategory.toLowerCase()) : true;
+    const matchSearch = searchTerm ? item.name.toLowerCase().includes(searchTerm.toLowerCase()) : true;
 
-    try {
-      const userdata = await api.get(`/users/${user.id}`);
-      const wishlist = userdata.data.wishlist || [];
+    let matchPrice = true;
+    const price = item.price;
 
-      const exists = wishlist.find((item) => item.id === product.id);
-      if (exists) return;
+    if (priceRange === "under-500") matchPrice = price < 500;
+    else if (priceRange === "500-1000") matchPrice = price >= 500 && price <= 1000;
+    else if (priceRange === "1000-1500") matchPrice = price > 1000 && price <= 1500;
+    else if (priceRange === "above-1500") matchPrice = price > 1500;
 
-      const updatedWishlist = [...wishlist, product];
-      await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
-
-      console.log("Added to wishlist:", product.name);
-    } catch (err) {
-      console.error("Failed to add to wishlist:", err);
-    }
-  };
+    return matchCategory && matchSubCategory && matchSearch && matchPrice;
+  });
 
   return (
-    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {products.map((item) => (
-        <div
-          key={item.id}
-          className="relative border rounded-lg shadow hover:shadow-lg transition-all p-4 flex flex-col items-center bg-white"
+    <div className="p-6">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <select
+          className="border px-3 py-2 rounded"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         >
-          <button
-          type='button'
-            onClick={() =>addToWishlist(item) }
-            className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
-          >
-            <FaHeart size={20} />
-          </button>
+          <option value="">All Categories</option>
+          <option value="Football">Football</option>
+          <option value="Cricket">Cricket</option>
+          <option value="Basketball">Basketball</option>
+        </select>
 
-          <img
-            src={item.image}
-            alt={item.name}
-            className="h-40 object-contain mb-4"
-          />
-          <h3 className="text-lg font-semibold mb-1">{item.name}</h3>
-          <p className="text-gray-600 text-sm mb-2">{item.category}</p>
-          <p className="text-red-600 font-bold mb-3">₹{item.price}</p>
+        <select
+          className="border px-3 py-2 rounded"
+          value={subCategory}
+          onChange={(e) => setSubCategory(e.target.value)}
+        >
+          <option value="">All Subcategories</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Socks">Socks</option>
+        </select>
 
-          <Link
-            to={`/products/${item.id}`}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-          >
-            View Details
-          </Link>
-        </div>
-      ))}
+        <select
+          className="border px-3 py-2 rounded"
+          value={priceRange}
+          onChange={(e) => setPriceRange(e.target.value)}
+        >
+          <option value="">All Prices</option>
+          <option value="under-500">Below ₹500</option>
+          <option value="500-1000">₹500 - ₹1000</option>
+          <option value="1000-1500">₹1000 - ₹1500</option>
+          <option value="above-1500">Above ₹1500</option>
+        </select>
+
+        <input
+          type="text"
+          placeholder="Search product"
+          className="border px-3 py-2 rounded"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Products */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {filteredProducts.length === 0 ? (
+          <p>No products found.</p>
+        ) : (
+          filteredProducts.map((item) => {
+            const isInWishlist = wishlist.some((w) => w.id === item.id);
+
+            return (
+              <div
+                key={item.id}
+                className="relative border rounded-lg shadow hover:shadow-lg transition-all p-4 flex flex-col items-center bg-white"
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    isInWishlist ? removeFromWishlist(item.id) : addToWishlist(item)
+                  }
+                  className={`absolute top-2 right-2 ${
+                    isInWishlist ? 'text-red-500' : 'text-gray-400'
+                  } hover:text-red-500`}
+                >
+                  <FaHeart size={20} />
+                </button>
+
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="h-40 object-contain mb-4"
+                />
+                <h3 className="text-lg font-semibold mb-1">{item.name}</h3>
+                <p className="text-gray-600 text-sm mb-2">{item.category}</p>
+                <p className="text-red-600 font-bold mb-3">₹{item.price}</p>
+
+                <Link
+                  to={`/products/${item.id}`}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                >
+                  View Details
+                </Link>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 };

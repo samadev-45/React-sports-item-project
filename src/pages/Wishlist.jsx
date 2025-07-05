@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/MyContext';
+import { CartContext } from '../context/CartContext';
 
 function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const {setCart} = useContext(CartContext)
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -23,27 +25,39 @@ function Wishlist() {
     fetchWishlist();
   }, [user]);
 
-  const moveToCart = async (product) => {
-    try {
-      // 1. Add to cart
-      const userRes = await api.get(`/users/${user.id}`);
-      const updatedCart = [...(userRes.data.cart || []), product];
-    
-      // 2. Remove from wishlist
-      const updatedWishlist = wishlist.filter((item) => item.id !== product.id);
+ const moveToCart = async (product) => {
+  try {
+    const res = await api.get(`/users/${user.id}`);
+    const userData = res.data;
 
-      // 3. Update user
-      await api.put(`/users/${user.id}`, {
-        ...userRes.data,
-        cart: updatedCart,
-        wishlist: updatedWishlist,
-      });
+    const cart = userData.cart || [];
 
-      setWishlist(updatedWishlist);
-    } catch (err) {
-      console.error("Error moving to cart:", err);
-    }
-  };
+    const exists = cart.find((item) => item.id === product.id);
+
+    const updatedCart = exists
+      ? cart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      : [...cart, { ...product, quantity: 1 }];
+
+    const updatedWishlist = wishlist.filter((item) => item.id !== product.id);
+
+    await api.patch(`/users/${user.id}`, {
+      cart: updatedCart,
+      wishlist: updatedWishlist,
+    });
+
+    setCart(updatedCart);
+    setWishlist(updatedWishlist);
+
+    toast.success("Moved to cart!");
+  } catch (err) {
+    console.error("Error moving to cart:", err);
+    toast.error("Failed to move to cart");
+  }
+};
 
   return (
     <div className="p-6">

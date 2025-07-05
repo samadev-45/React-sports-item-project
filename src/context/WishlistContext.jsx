@@ -19,13 +19,12 @@ export const WishlistProvider = ({ children }) => {
 
   const addToWishlist = async (product) => {
     if (!user?.id) return;
-
     const exists = wishlist.find(item => item.id === product.id);
     if (exists) return toast.info("Already in wishlist!");
 
     const updatedList = [...wishlist, product];
 
-    await api.put(`/users/${user.id}`, { wishlist: updatedList });
+    await api.post(`/users/${user.id}`, { wishlist: updatedList });
     setWishlist(updatedList);
     toast.success("Added to wishlist!");
   };

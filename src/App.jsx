@@ -9,6 +9,8 @@ import ProductDetails from "./pages/ProductDetails";
 import "./App.css";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 
 function App() {
   return (
@@ -70,6 +72,8 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/checkout" element={<Checkout/>}/>
+        <Route path="/orders" element={<Orders/>}/>
       </Routes>
     </BrowserRouter>
   );
