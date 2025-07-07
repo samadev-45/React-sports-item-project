@@ -1,8 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-import api from "../services/api";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { AuthContext } from "../context/MyContext";

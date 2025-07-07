@@ -45,7 +45,7 @@ const Cart = () => {
                     onClick={() => decreaseQty(item.id)}
                     className="px-2 bg-gray-200 rounded text-xl font-bold"
                   >
-                    −
+                    -
                   </button>
 
                   <span className="px-3">{item.quantity}</span>

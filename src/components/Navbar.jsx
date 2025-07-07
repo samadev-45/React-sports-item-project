@@ -23,6 +23,8 @@ const Navbar = () => {
       navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
     }
   };
+  
+
 
   return (
     <nav className="flex flex-wrap items-center justify-between px-4 py-3 shadow-md bg-white">
@@ -50,9 +52,9 @@ const Navbar = () => {
       <div className="flex items-center gap-3 text-black">
         {user ? (
           <>
-            <span className="hidden sm:block text-sm text-gray-700">Hi, {user.name}</span>
+            
             <Link to="/wishlist" className="relative hover:text-red-500">
-              <FaHeart size={20} />
+              <FaHeart size={25} />
               {wishlist.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
               {wishlist.length}
@@ -60,15 +62,15 @@ const Navbar = () => {
               )}
               </Link>
             <Link to="/cart" className="relative hover:text-red-500">
-            <FaShoppingCart size={20} />
+            <FaShoppingCart size={25} />
             {cart.reduce((acc, item) => acc + item.quantity, 0) > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
             {cart.reduce((acc, item) => acc + item.quantity, 0)}
             </span>
             )}
-</Link>
+            </Link>
             <Link to="/profile" className="hover:text-red-500">
-              <FaUser size={20} />
+              <FaUser size={25} />
             </Link>
             <button
               onClick={handleLogout}
@@ -79,6 +81,14 @@ const Navbar = () => {
           </>
         ) : (
           <>
+                 <Link to="/cart" className="relative hover:text-red-500">
+            <FaShoppingCart size={30} />
+            {cart.reduce((acc, item) => acc + item.quantity, 0) > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+            {cart.reduce((acc, item) => acc + item.quantity, 0)}
+            </span>
+            )}
+            </Link>
             <Link to="/login" className="hover:text-red-500 text-sm">Login</Link>
             <Link to="/signup" className="hover:text-red-500 text-sm">Signup</Link>
           </>

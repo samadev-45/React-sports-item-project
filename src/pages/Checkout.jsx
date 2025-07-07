@@ -28,12 +28,12 @@ const Checkout = () => {
         id: `order_${Date.now()}`,
         items: cart.map((item) => ({
           ...item,
-          status: "Delivered",
+          status: "Pending",
           time: new Date().toLocaleString(),
           address: address.trim(),
         })),
         address: address.trim(),
-        status: "Delivered",
+        status: "Pending",
         time: new Date().toLocaleString(),
       };
 
