@@ -16,9 +16,10 @@ const Cart = () => {
 
   return (
     <div className="p-6 grid md:grid-cols-3 gap-6">
-      {/* LEFT: CART ITEMS */}
+      
       <div className="md:col-span-2">
         <h2 className="text-2xl font-bold mb-4">YOUR BAG</h2>
+        
         <p className="mb-4 text-gray-600">
           TOTAL ({cart.length} item{cart.length > 1 ? "s" : ""}) ₹
           {total.toFixed(2)}
@@ -74,7 +75,7 @@ const Cart = () => {
         ))}
       </div>
 
-      {/* RIGHT: ORDER SUMMARY */}
+      
       <div className="border p-6 rounded shadow h-fit">
         <h3 className="text-xl font-bold mb-4">ORDER SUMMARY</h3>
 
