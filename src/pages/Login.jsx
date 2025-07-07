@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import api from "../services/api";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -8,7 +9,7 @@ import { AuthContext } from "../context/MyContext";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const { setUser } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,29 +21,15 @@ const Login = () => {
     const { email, password } = formData;
 
     if (!email || !password) {
-      return toast.warning("All fields are required.");
+      toast.warning("All fields are required.");
+      return;
     }
 
-    try {
-      const res = await api.get(`/users?email=${email}&password=${password}`);
+    const success = await login(email, password);
 
-      if (res.data.length === 0) {
-        return toast.error("Invalid email or password.");
-      }
-
-      const user = res.data[0];
-
-      if (user.isBlock) {
-        return toast.error("User is blocked. Contact support.");
-      }
-
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(res.data[0]));
-      toast.success("Login successful!");
+    if (success) {
+      
       navigate("/");
-    } catch (err) {
-      console.error(err);
-      toast.error("Login failed. Please try again.");
     }
   };
 
@@ -69,10 +56,21 @@ const Login = () => {
             onChange={handleChange}
             placeholder="Enter your password"
           />
-          <div style={{display:'flex', justifyContent:"space-between",alignItems:"center"}}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Button text="Login" type="submit" />
             <label
-              style={{ textAlign: "end",fontWeight:"bold", color:"red "}}
+              style={{
+                textAlign: "end",
+                fontWeight: "bold",
+                color: "red",
+                cursor: "pointer",
+              }}
               onClick={() => navigate("/signup")}
             >
               Signup?

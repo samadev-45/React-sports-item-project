@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
     }
   }, [user]);
 
-  // ✅ Add to cart (with quantity = 1 if not exists, else increase quantity)
+  //  Add to cart 
   const addToCart = async (product) => {
     if (!user?.id) return;
 
@@ -43,7 +43,7 @@ export const CartProvider = ({ children }) => {
     setCart(updatedCart);
   };
 
-  // ✅ Remove item
+  // Remove item //
   const removeFromCart = async (productId) => {
     if (!user?.id) return;
 
@@ -53,7 +53,7 @@ export const CartProvider = ({ children }) => {
     setCart(updatedCart);
   };
 
-  // ✅ Increase quantity
+  // Increase items
   const increaseQty = async (id) => {
     const updatedCart = cart.map((item) =>
       item.id === id ? { ...item, quantity: item.quantity + 1 } : item
@@ -63,7 +63,7 @@ export const CartProvider = ({ children }) => {
     setCart(updatedCart);
   };
 
-  // ✅ Decrease quantity
+  // Decrease 
   const decreaseQty = async (id) => {
     const updatedCart = cart.map((item) =>
       item.id === id

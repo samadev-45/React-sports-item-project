@@ -22,58 +22,66 @@ function App() {
         <Route
           path="/"
           element={
-            <PrivateRoute>
+            
               <Layout>
                 <LandingPage />
               </Layout>
-            </PrivateRoute>
+            
           }
         />
 
         <Route
           path="/products"
           element={
-            <PrivateRoute>
+
               <Layout>
                 <Products />
               </Layout>
-            </PrivateRoute>
+            
           }
         />
 
         <Route
           path="/products/:id"
           element={
-            <PrivateRoute>
+            
               <Layout>
                 <ProductDetails />
               </Layout>
-            </PrivateRoute>
+            
           }
         />
 
         <Route
           path="/cart"
           element={
-            <PrivateRoute>
+            
               <Layout>
                 <Cart />
               </Layout>
-            </PrivateRoute>
+            
           }
         />
         <Route
           path="/wishlist"
           element={
-            <PrivateRoute>
+            
               <Layout>
                 <Wishlist />
               </Layout>
-            </PrivateRoute>
+            
           }
         />
-        <Route path="/checkout" element={<Checkout/>}/>
-        <Route path="/orders" element={<Orders/>}/>
+        <Route path="/checkout" element={
+          <PrivateRoute>
+            <Checkout/>
+          </PrivateRoute>
+          }/>
+        <Route path="/orders" element={
+          <PrivateRoute>
+            <Orders/>
+          </PrivateRoute>
+          }/>
       </Routes>
     </BrowserRouter>
   );

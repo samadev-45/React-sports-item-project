@@ -41,6 +41,44 @@
       "cart": [],
       "wishlist": [],
       "orders": []
+    },
+    {
+      "id": "c1df",
+      "name": "samadev a",
+      "email": "samadev123@gmail.com",
+      "password": "12345678",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "id": "6c83",
+      "name": "user",
+      "email": "test@gmail.com",
+      "password": "test123",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "id": "c429",
+      "name": "dev",
+      "email": "abcd@gmail.com",
+      "password": "0123",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "wishlist": [],
+      "id": "4c63",
+      "cart": []
     }
   ],
   "products": [

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import api from "../services/api";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { AuthContext } from "../context/MyContext";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +13,9 @@ const Signup = () => {
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
+  const { register } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,35 +23,16 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password } = formData;
 
+    const { name, email, password } = formData;
     if (!name || !email || !password) {
       toast.warning("All fields are required.");
       return;
     }
 
-    try {
-      const res = await api.get(`/users?email=${email}`);
-      if (res.data.length > 0) {
-        toast.warning("Email already exists.");
-        return;
-      }
-
-      const newUser = {
-        ...formData,
-        role: "user",
-        isBlock: false,
-        cart: [],
-        orders: [],
-        wishlist: [],
-      };
-
-      await api.post("/users", newUser);
-      toast.success("Signup successful!");
-      navigate("/login");
-    } catch (err) {
-      console.error(err);
-      toast.error("Signup failed. Please try again.");
+    const success = await register(formData);
+    if (success) {
+      navigate("/login"); 
     }
   };
 
@@ -60,7 +43,7 @@ const Signup = () => {
           src="/img.jpg"
           alt="Signup Illustration"
           className="w-full h-full object-cover"
-          />
+        />
       </div>
 
       <div className="flex flex-col justify-center w-full md:w-1/2 px-8 py-12 bg-white">
@@ -97,7 +80,10 @@ const Signup = () => {
 
         <p className="mt-4 text-sm text-gray-600">
           Already have an account?{" "}
-          <span onClick={() => navigate("/login")} style={{ color: "red" }}>
+          <span
+            onClick={() => navigate("/login")}
+            className="text-red-500 cursor-pointer font-medium"
+          >
             SignIn
           </span>
         </p>

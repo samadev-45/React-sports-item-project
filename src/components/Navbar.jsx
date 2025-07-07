@@ -3,18 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/MyContext";
 import { FaHeart, FaUser, FaShoppingCart } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { CartContext } from "../context/CartContext";
+import { WishlistContext } from "../context/WishlistContext";
 
 const Navbar = () => {
-  const { user, setUser } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext); 
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const { wishlist } = useContext(WishlistContext);
+  const { cart } = useContext(CartContext);
 
   const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-    toast.success("Logged out successfully!");
+    logout();
     navigate("/login");
   };
+
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
@@ -48,12 +51,22 @@ const Navbar = () => {
         {user ? (
           <>
             <span className="hidden sm:block text-sm text-gray-700">Hi, {user.name}</span>
-            <Link to="/wishlist" className="hover:text-red-500">
+            <Link to="/wishlist" className="relative hover:text-red-500">
               <FaHeart size={20} />
-            </Link>
-            <Link to="/cart" className="hover:text-red-500">
-              <FaShoppingCart size={20} />
-            </Link>
+              {wishlist.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+              {wishlist.length}
+              </span>
+              )}
+              </Link>
+            <Link to="/cart" className="relative hover:text-red-500">
+            <FaShoppingCart size={20} />
+            {cart.reduce((acc, item) => acc + item.quantity, 0) > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+            {cart.reduce((acc, item) => acc + item.quantity, 0)}
+            </span>
+            )}
+</Link>
             <Link to="/profile" className="hover:text-red-500">
               <FaUser size={20} />
             </Link>
