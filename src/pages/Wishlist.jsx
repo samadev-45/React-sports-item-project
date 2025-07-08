@@ -64,7 +64,8 @@ function Wishlist() {
       <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
       <img src="https://www.niviasports.com/cdn/shop/collections/cricket-category_banner-footwear.webp?v=1722230903&width=1100" alt="wish list image" style={{width:"100%"}} />
       {wishlist.length === 0 ? (
-        <p className="text-gray-600 ">Your wishlist is empty.</p>
+        <h1 className="text-gray-600 text-lg text-center mt-10 text-bold text-3xl">Your wishlist is empty.</h1>
+
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {wishlist.map((item) => (

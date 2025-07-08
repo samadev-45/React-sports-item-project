@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { FaHeart } from 'react-icons/fa';
-import { AuthContext } from '../context/MyContext';
 import { WishlistContext } from '../context/WishlistContext';
 
 const Products = () => {
@@ -12,7 +11,6 @@ const Products = () => {
   const [priceRange, setPriceRange] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { user } = useContext(AuthContext);
   const { wishlist, addToWishlist, removeFromWishlist } = useContext(WishlistContext);
 
   useEffect(() => {

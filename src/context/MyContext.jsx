@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  //  auto log
+  
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     if (userId) {
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  //  Save only userId in localStorage
+  
   const login = async (email, password) => {
     try {
       const res = await api.get(`/users?email=${email}&password=${password}`);

@@ -11,6 +11,7 @@ import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -22,64 +23,71 @@ function App() {
         <Route
           path="/"
           element={
-            
-              <Layout>
-                <LandingPage />
-              </Layout>
-            
+            <Layout>
+              <LandingPage />
+            </Layout>
           }
         />
 
         <Route
           path="/products"
           element={
-
-              <Layout>
-                <Products />
-              </Layout>
-            
+            <Layout>
+              <Products />
+            </Layout>
           }
         />
 
         <Route
           path="/products/:id"
           element={
-            
-              <Layout>
-                <ProductDetails />
-              </Layout>
-            
+            <Layout>
+              <ProductDetails />
+            </Layout>
           }
         />
 
         <Route
           path="/cart"
           element={
-            
-              <Layout>
-                <Cart />
-              </Layout>
-            
+            <Layout>
+              <Cart />
+            </Layout>
           }
         />
         <Route
           path="/wishlist"
           element={
-            
-              <Layout>
-                <Wishlist />
-              </Layout>
-            
+            <Layout>
+              <Wishlist />
+            </Layout>
           }
         />
-        <Route path="/checkout" element={
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Checkout />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Orders />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route path="/profile" element={
           <PrivateRoute>
-            <Checkout/>
-          </PrivateRoute>
-          }/>
-        <Route path="/orders" element={
-          <PrivateRoute>
-            <Orders/>
+          <Layout>
+            <Profile/>
+          </Layout>
           </PrivateRoute>
           }/>
       </Routes>

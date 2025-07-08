@@ -71,10 +71,10 @@ function LandingPage() {
               <button className="text-red-600 font-semibold ml-2">SEND</button>
             </div>
             <div className="flex gap-4 mt-4">
-              <span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">f</span>
-              <span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">x</span>
-              <span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">i</span>
-              <span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">o</span>
+              <Link to='https://www.facebook.com/'><span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-blue-400">f</span></Link>
+              <Link to='https://x.com/?lang=en'><span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">x</span>  </Link>
+            
+              <Link to='https://bridgeon.in/'><span className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">G</span></Link>
             </div>
           </div>
 
@@ -87,9 +87,9 @@ function LandingPage() {
               <li>Privacy Policy</li>
               <li>Exchange & Return Policy</li>
               <li>Track Order</li>
-              <li>Blogs</li>
-              <li>Catalogues</li>
-              <li>CSR Policy</li>
+              
+              
+              
             </ul>
           </div>
 

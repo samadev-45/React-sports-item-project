@@ -10,7 +10,10 @@ const Cart = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="p-6 text-center text-xl">🛒 Your cart is empty.</div>
+      <h1 className="text-center text-2xl font-semibold text-gray-700 mt-10">
+  🛒 Your cart is empty.
+</h1>
+
     );
   }
 

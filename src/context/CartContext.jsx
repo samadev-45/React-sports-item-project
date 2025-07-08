@@ -43,7 +43,7 @@ export const CartProvider = ({ children }) => {
     setCart(updatedCart);
   };
 
-  // Remove item //
+  // Remove 
   const removeFromCart = async (productId) => {
     if (!user?.id) return;
 
@@ -53,7 +53,7 @@ export const CartProvider = ({ children }) => {
     setCart(updatedCart);
   };
 
-  // Increase items
+  // Increase 
   const increaseQty = async (id) => {
     const updatedCart = cart.map((item) =>
       item.id === id ? { ...item, quantity: item.quantity + 1 } : item

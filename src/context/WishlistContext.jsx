@@ -24,7 +24,7 @@ export const WishlistProvider = ({ children }) => {
 
     const updatedList = [...wishlist, product];
 
-    await api.put(`/users/${user.id}`, { ...user, wishlist: updatedList });
+    await api.patch(`/users/${user.id}`, { ...user, wishlist: updatedList });
 
     setWishlist(updatedList);
     toast.success("Added to wishlist!");
@@ -32,7 +32,7 @@ export const WishlistProvider = ({ children }) => {
 
   const removeFromWishlist = async (id) => {
     const updatedList = wishlist.filter(item => item.id !== id);
-    await api.put(`/users/${user.id}`, { wishlist: updatedList });
+    await api.patch(`/users/${user.id}`, { wishlist: updatedList });
     setWishlist(updatedList);
     toast.success("Removed from wishlist!")
   }
