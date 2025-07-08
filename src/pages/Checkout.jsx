@@ -52,6 +52,14 @@ const Checkout = () => {
     }
   };
 
+  const removeFromCart = (id) => {
+    const confirmed = window.confirm("Are you sure you want to remove this item?");
+    if (confirmed) {
+      const updatedCart = cart.filter((item) => item.id !== id);
+      setCart(updatedCart);
+    }
+  };
+
   if (orderSuccess) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center">
@@ -80,7 +88,7 @@ const Checkout = () => {
     <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4 text-center">Checkout Summary</h2>
 
-     
+      {/* Address Input */}
       <div className="mb-4">
         <label className="block mb-1 font-semibold">Shipping Address</label>
         <textarea
@@ -92,12 +100,22 @@ const Checkout = () => {
         />
       </div>
 
-     
+      {/* Cart Summary */}
       <div className="bg-white rounded shadow p-4 mb-6">
         {cart.map((item) => (
-          <div key={item.id} className="flex justify-between border-b py-2">
-            <div>{item.name} × {item.quantity}</div>
-            <div>₹{item.price * item.quantity}</div>
+          <div key={item.id} className="flex justify-between items-center border-b py-2">
+            <div>
+              {item.name} × {item.quantity}
+            </div>
+            <div className="flex items-center gap-4">
+              <div>₹{item.price * item.quantity}</div>
+              <button
+                onClick={() => removeFromCart(item.id)}
+                className="text-sm text-red-500 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         ))}
 

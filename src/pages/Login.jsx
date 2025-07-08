@@ -1,33 +1,30 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { AuthContext } from "../context/MyContext";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Validation schema using Yup
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { email, password } = formData;
-
-    if (!email || !password) {
-      toast.warning("All fields are required.");
-      return;
-    }
-
+  // Submit logic
+  const handleSubmit = async (values, { setSubmitting }) => {
+    const { email, password } = values;
     const success = await login(email, password);
+    setSubmitting(false);
 
     if (success) {
-      
       navigate("/");
+    } else {
+      toast.error("Invalid credentials");
     }
   };
 
@@ -37,44 +34,64 @@ const Login = () => {
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Login
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-          />
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-          />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Button text="Login" type="submit" />
-            <label
-              style={{
-                textAlign: "end",
-                fontWeight: "bold",
-                color: "red",
-                cursor: "pointer",
-              }}
-              onClick={() => navigate("/signup")}
-            >
-              Signup?
-            </label>
-          </div>
-        </form>
+
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-5">
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Email</label>
+                <Field
+                  type="email"
+                  name="email"
+                  className="w-full border px-4 py-2 rounded"
+                  placeholder="Enter your email"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Password</label>
+                <Field
+                  type="password"
+                  name="password"
+                  className="w-full border px-4 py-2 rounded"
+                  placeholder="Enter your password"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              <div className="flex justify-between items-center">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  {isSubmitting ? "Logging in..." : "Login"}
+                </button>
+                <span
+                  className="text-red-600 font-semibold cursor-pointer"
+                  onClick={() => navigate("/signup")}
+                >
+                  Signup?
+                </span>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

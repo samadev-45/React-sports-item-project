@@ -7,7 +7,16 @@
       "password": "123456",
       "role": "user",
       "isBlock": false,
-      "cart": [],
+      "cart": [
+        {
+          "id": "2",
+          "name": "Nivia Storm Football - Size 5 (White), Rubber",
+          "price": 999,
+          "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+          "category": "Football",
+          "quantity": 1
+        }
+      ],
       "wishlist": [],
       "orders": [
         {
@@ -47,6 +56,25 @@
           "address": "kozhikod",
           "status": "Pending",
           "time": "7/8/2025, 11:14:03 AM"
+        },
+        {
+          "id": "order_1751963562176",
+          "items": [
+            {
+              "id": "2",
+              "name": "Nivia Storm Football - Size 5 (White), Rubber",
+              "price": 999,
+              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+              "category": "Football",
+              "quantity": 2,
+              "status": "Pending",
+              "time": "7/8/2025, 2:02:42 PM",
+              "address": "kozhikod"
+            }
+          ],
+          "address": "kozhikod",
+          "status": "Pending",
+          "time": "7/8/2025, 2:02:42 PM"
         }
       ]
     },
@@ -59,7 +87,57 @@
       "isBlock": false,
       "cart": [],
       "wishlist": [],
-      "orders": []
+      "orders": [
+        {
+          "id": "order_1751985207387",
+          "items": [
+            {
+              "id": "2",
+              "name": "Nivia Storm Football - Size 5 (White), Rubber",
+              "price": 999,
+              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/8/2025, 8:03:27 PM",
+              "address": "sssaa"
+            }
+          ],
+          "address": "sssaa",
+          "status": "Pending",
+          "time": "7/8/2025, 8:03:27 PM"
+        },
+        {
+          "id": "order_1751988383693",
+          "items": [
+            {
+              "id": "2",
+              "name": "Nivia Storm Football - Size 5 (White), Rubber",
+              "price": 999,
+              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/8/2025, 8:56:23 PM",
+              "address": "maftnytjhuj"
+            },
+            {
+              "id": "1",
+              "name": "Cricket Bat",
+              "price": 1499,
+              "image": "https://m.media-amazon.com/images/I/6164TY9DCtL._SX679_.jpg",
+              "category": "Cricket",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/8/2025, 8:56:23 PM",
+              "address": "maftnytjhuj"
+            }
+          ],
+          "address": "maftnytjhuj",
+          "status": "Pending",
+          "time": "7/8/2025, 8:56:23 PM"
+        }
+      ]
     },
     {
       "id": "c1df",
@@ -70,7 +148,38 @@
       "isBlock": false,
       "cart": [],
       "wishlist": [],
-      "orders": []
+      "orders": [
+        {
+          "id": "order_1751980268859",
+          "items": [
+            {
+              "id": "3",
+              "name": "Tennis Racket",
+              "price": 1999,
+              "image": "https://scssports.in/cdn/shop/files/Burn_Pro_PS13_Badminton_Racket_d1da6f79-7a3f-4161-961d-1d72abce3bac.jpg?v=1735299406",
+              "category": "Tennis",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/8/2025, 6:41:08 PM",
+              "address": "ssss"
+            },
+            {
+              "id": "2",
+              "name": "Nivia Storm Football - Size 5 (White), Rubber",
+              "price": 999,
+              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/8/2025, 6:41:08 PM",
+              "address": "ssss"
+            }
+          ],
+          "address": "ssss",
+          "status": "Pending",
+          "time": "7/8/2025, 6:41:08 PM"
+        }
+      ]
     },
     {
       "id": "6c83",
