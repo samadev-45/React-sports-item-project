@@ -12,6 +12,12 @@ import Wishlist from "./pages/Wishlist";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
+import AdminPrivateRoute from "./admin/AdminPrivateRoute";
+import AdminLayout from "./admin/AdminLayout";
+import Dashboard from "./admin/Dashbord";
+import Users from "./admin/Users";
+import AdminProducts from "./admin/Products";
+import AdminOrders from "./admin/Orders";
 
 function App() {
   return (
@@ -83,13 +89,31 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/profile" element={
-          <PrivateRoute>
-          <Layout>
-            <Profile/>
-          </Layout>
-          </PrivateRoute>
-          }/>
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Profile />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminPrivateRoute>
+              <AdminLayout />
+            </AdminPrivateRoute>
+          }
+        >
+
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="users" element={<Users />} />
+        <Route path="products" element={<AdminProducts />} />
+        <Route path="orders" element={<AdminOrders />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
     }
   }, [user]);
 
-  //  Add to cart 
+  //  Add to cart
   const addToCart = async (product) => {
     if (!user?.id) return;
 

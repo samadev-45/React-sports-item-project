@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../services/api";
 import { FaHeart } from "react-icons/fa";
 import { WishlistContext } from "../context/WishlistContext";
+import ReactPaginate from "react-paginate";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -10,7 +11,9 @@ const Products = () => {
   const [subCategory, setSubCategory] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, SetDebouncedSearchTerm] = useState("")
+  const [debouncedSearchTerm, SetDebouncedSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 8;
 
   const { wishlist, addToWishlist, removeFromWishlist } =
     useContext(WishlistContext);
@@ -22,14 +25,13 @@ const Products = () => {
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     const handler = setTimeout(() => {
       SetDebouncedSearchTerm(searchTerm);
     }, 300);
 
     return () => clearTimeout(handler);
   }, [searchTerm]);
-  
 
   const filteredProducts = products.filter((item) => {
     const matchCategory = category
@@ -54,6 +56,14 @@ const Products = () => {
 
     return matchCategory && matchSubCategory && matchSearch && matchPrice;
   });
+
+  const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
+  const offset = currentPage * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(offset, offset + itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
   return (
     <div className="p-6">
@@ -106,10 +116,10 @@ const Products = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.length === 0 ? (
+        {paginatedProducts.length === 0 ? (
           <p>No products found.</p>
         ) : (
-          filteredProducts.map((item) => {
+          paginatedProducts.map((item) => {
             const isInWishlist = wishlist.some((w) => w.id === item.id);
 
             return (
@@ -158,6 +168,25 @@ const Products = () => {
           })
         )}
       </div>
+
+      {pageCount > 1 && (
+        <div className="flex justify-center mt-8">
+          <ReactPaginate
+            previousLabel={"← Prev"}
+            nextLabel={"Next →"}
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            containerClassName={"flex gap-2 text-sm"}
+            pageClassName={"px-3 py-1 border rounded"}
+            activeClassName={"bg-black text-white"}
+            previousClassName={"px-3 py-1 border rounded"}
+            nextClassName={"px-3 py-1 border rounded"}
+            breakLabel={"..."}
+            breakClassName={"px-3 py-1"}
+            forcePage={currentPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

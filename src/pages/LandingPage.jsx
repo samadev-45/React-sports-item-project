@@ -26,7 +26,7 @@ function LandingPage() {
       <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-20">
         <div className="max-w-xl bg-white bg-opacity-80 p-6 rounded-lg shadow-lg">
           <h1 className="text-3xl md:text-5xl font-bold text-red-600 mb-4">
-            Play Your Way in White
+            Play Your Way 
           </h1>
           <p className="text-base md:text-lg text-gray-800 mb-6">
             Discover high-performance sportswear and gear crafted for champions. Whether you're training, competing, or just staying active — elevate your game with us.

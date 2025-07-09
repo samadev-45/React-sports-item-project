@@ -7,16 +7,7 @@
       "password": "123456",
       "role": "user",
       "isBlock": false,
-      "cart": [
-        {
-          "id": "2",
-          "name": "Nivia Storm Football - Size 5 (White), Rubber",
-          "price": 999,
-          "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
-          "category": "Football",
-          "quantity": 1
-        }
-      ],
+      "cart": [],
       "wishlist": [],
       "orders": [
         {
@@ -54,7 +45,7 @@
             }
           ],
           "address": "kozhikod",
-          "status": "Pending",
+          "status": "Delivered",
           "time": "7/8/2025, 11:14:03 AM"
         },
         {
@@ -75,40 +66,9 @@
           "address": "kozhikod",
           "status": "Pending",
           "time": "7/8/2025, 2:02:42 PM"
-        }
-      ]
-    },
-    {
-      "id": "2665",
-      "name": "ashfaque",
-      "email": "asdf@gmail.com",
-      "password": "asdf123",
-      "role": "user",
-      "isBlock": false,
-      "cart": [],
-      "wishlist": [],
-      "orders": [
-        {
-          "id": "order_1751985207387",
-          "items": [
-            {
-              "id": "2",
-              "name": "Nivia Storm Football - Size 5 (White), Rubber",
-              "price": 999,
-              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
-              "category": "Football",
-              "quantity": 1,
-              "status": "Pending",
-              "time": "7/8/2025, 8:03:27 PM",
-              "address": "sssaa"
-            }
-          ],
-          "address": "sssaa",
-          "status": "Pending",
-          "time": "7/8/2025, 8:03:27 PM"
         },
         {
-          "id": "order_1751988383693",
+          "id": "order_1752060693014",
           "items": [
             {
               "id": "2",
@@ -116,81 +76,25 @@
               "price": 999,
               "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
               "category": "Football",
-              "quantity": 1,
+              "quantity": 2,
               "status": "Pending",
-              "time": "7/8/2025, 8:56:23 PM",
-              "address": "maftnytjhuj"
-            },
-            {
-              "id": "1",
-              "name": "Cricket Bat",
-              "price": 1499,
-              "image": "https://m.media-amazon.com/images/I/6164TY9DCtL._SX679_.jpg",
-              "category": "Cricket",
-              "quantity": 1,
-              "status": "Pending",
-              "time": "7/8/2025, 8:56:23 PM",
-              "address": "maftnytjhuj"
+              "time": "7/9/2025, 5:01:32 PM",
+              "address": "yes"
             }
           ],
-          "address": "maftnytjhuj",
+          "address": "yes",
           "status": "Pending",
-          "time": "7/8/2025, 8:56:23 PM"
+          "time": "7/9/2025, 5:01:32 PM"
         }
       ]
     },
     {
-      "id": "c1df",
-      "name": "samadev a",
-      "email": "samadev123@gmail.com",
-      "password": "12345678",
-      "role": "user",
-      "isBlock": false,
-      "cart": [],
-      "wishlist": [],
-      "orders": [
-        {
-          "id": "order_1751980268859",
-          "items": [
-            {
-              "id": "3",
-              "name": "Tennis Racket",
-              "price": 1999,
-              "image": "https://scssports.in/cdn/shop/files/Burn_Pro_PS13_Badminton_Racket_d1da6f79-7a3f-4161-961d-1d72abce3bac.jpg?v=1735299406",
-              "category": "Tennis",
-              "quantity": 1,
-              "status": "Pending",
-              "time": "7/8/2025, 6:41:08 PM",
-              "address": "ssss"
-            },
-            {
-              "id": "2",
-              "name": "Nivia Storm Football - Size 5 (White), Rubber",
-              "price": 999,
-              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
-              "category": "Football",
-              "quantity": 1,
-              "status": "Pending",
-              "time": "7/8/2025, 6:41:08 PM",
-              "address": "ssss"
-            }
-          ],
-          "address": "ssss",
-          "status": "Pending",
-          "time": "7/8/2025, 6:41:08 PM"
-        }
-      ]
-    },
-    {
-      "id": "6c83",
-      "name": "user",
-      "email": "test@gmail.com",
-      "password": "test123",
-      "role": "user",
-      "isBlock": false,
-      "cart": [],
-      "wishlist": [],
-      "orders": []
+      "id": "0001",
+      "name": "Admin",
+      "email": "admin@gmail.com",
+      "password": "admin123",
+      "role": "admin",
+      "isBlock": false
     }
   ],
   "products": [
@@ -256,13 +160,6 @@
       "price": 3499,
       "image": "https://m.media-amazon.com/images/I/618RT+-tqHL._AC_SR230,210_CB1169409_QL70_.jpg",
       "category": "Shoes"
-    },
-    {
-      "id": "10",
-      "name": "Spalding Basketball",
-      "price": 1899,
-      "image": "https://contents.mediadecathlon.com/p2481116/2c8bbf92e31fa5a8c0edbfb9568705e2/p2481116.jpg?format=auto&quality=70&f=1024x0",
-      "category": "Basketball"
     },
     {
       "id": "11",

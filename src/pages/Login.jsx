@@ -4,28 +4,50 @@ import { toast } from "react-toastify";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../context/MyContext";
+import api from "../services/api";
+import { useAdmin } from "../context/AdminContext";
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
+  const { setAdmin } = useAdmin();
   const navigate = useNavigate();
 
-  // Validation schema using Yup
+  // ✅ Validation schema
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
 
-  // Submit logic
+  // ✅ Form submission logic
   const handleSubmit = async (values, { setSubmitting }) => {
     const { email, password } = values;
-    const success = await login(email, password);
-    setSubmitting(false);
+    setSubmitting(true);
 
-    if (success) {
-      navigate("/");
-    } else {
-      toast.error("Invalid credentials");
+    try {
+      const res = await api.get(`/users?email=${email}&password=${password}`);
+      if (res.data.length > 0) {
+        const user = res.data[0];
+
+        if (user.role === "admin") {
+          setAdmin(user); // set context
+          localStorage.setItem("adminId", user.id); // ✅ store only ID
+          toast.success("Welcome, Admin!");
+          navigate("/admin/dashboard");
+        } else {
+          setUser(user); // set context
+          localStorage.setItem("userId", user.id); // ✅ store only ID
+          toast.success("Login successful!");
+          navigate("/");
+        }
+      } else {
+        toast.error("Invalid credentials");
+      }
+    } catch (error) {
+      toast.error("Login failed");
+      console.error("Login error:", error);
     }
+
+    setSubmitting(false);
   };
 
   return (
@@ -42,7 +64,6 @@ const Login = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-5">
-              
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <Field
@@ -58,7 +79,6 @@ const Login = () => {
                 />
               </div>
 
-              
               <div>
                 <label className="block text-sm font-medium mb-1">Password</label>
                 <Field
