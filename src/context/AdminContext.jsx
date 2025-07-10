@@ -1,40 +1,40 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import api from "../services/api"; // required to fetch admin by ID
+import api from "../services/api";
 
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true); // 👈 add this
 
-  // ✅ On initial mount, load admin by ID
   useEffect(() => {
     const adminId = localStorage.getItem("adminId");
     if (adminId) {
       api
         .get(`/users/${adminId}`)
-        .then((res) => {
-          setAdmin(res.data);
-        })
+        .then((res) => setAdmin(res.data))
         .catch((err) => {
           console.error("Failed to fetch admin by ID", err);
-        });
+          localStorage.removeItem("adminId");
+        })
+        .finally(() => setLoading(false)); // ✅ finish loading
+    } else {
+      setLoading(false); // ✅ no admin stored
     }
   }, []);
 
-  // ✅ Login admin and store ID only
   const loginAdmin = (adminData) => {
     setAdmin(adminData);
-    localStorage.setItem("adminId", adminData.id); // only store ID
+    localStorage.setItem("adminId", adminData.id);
   };
 
-  // ✅ Logout logic
   const logoutAdmin = () => {
     setAdmin(null);
     localStorage.removeItem("adminId");
   };
 
   return (
-    <AdminContext.Provider value={{ admin, loginAdmin, logoutAdmin,setAdmin }}>
+    <AdminContext.Provider value={{ admin, loginAdmin, logoutAdmin, setAdmin, loading }}>
       {children}
     </AdminContext.Provider>
   );

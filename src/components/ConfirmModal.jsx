@@ -1,7 +1,7 @@
-import React from "react";
+
 import Modal from "react-modal";
 
-Modal.setAppElement("#root"); // required for accessibility
+Modal.setAppElement("#root"); 
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
   return (

@@ -30,12 +30,12 @@ const Login = () => {
 
         if (user.role === "admin") {
           setAdmin(user); // set context
-          localStorage.setItem("adminId", user.id); // ✅ store only ID
+          localStorage.setItem("adminId", user.id); 
           toast.success("Welcome, Admin!");
           navigate("/admin/dashboard");
         } else {
           setUser(user); // set context
-          localStorage.setItem("userId", user.id); // ✅ store only ID
+          localStorage.setItem("userId", user.id); 
           toast.success("Login successful!");
           navigate("/");
         }

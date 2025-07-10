@@ -23,7 +23,8 @@ const AdminOrders = () => {
         }))
       );
 
-      setOrders(allOrders);
+      const sortedOrders = allOrders.sort((a, b) => new Date(b.time) - new Date(a.time));
+setOrders(sortedOrders);
     } catch (err) {
   console.error("Fetch Error:", err.message, err.code, err.response);
   toast.error("Failed to fetch products");
