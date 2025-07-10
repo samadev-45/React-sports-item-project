@@ -7,8 +7,25 @@
       "password": "123456",
       "role": "user",
       "isBlock": false,
-      "cart": [],
-      "wishlist": [],
+      "cart": [
+        {
+          "id": "2",
+          "name": "Nivia Storm Football - Size 5 (White), Rubber",
+          "price": 999,
+          "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+          "category": "Football",
+          "quantity": 1
+        }
+      ],
+      "wishlist": [
+        {
+          "id": "1",
+          "name": "Cricket Bat",
+          "price": 1499,
+          "image": "https://m.media-amazon.com/images/I/6164TY9DCtL._SX679_.jpg",
+          "category": "Cricket"
+        }
+      ],
       "orders": [
         {
           "id": "order_1751866695043",
@@ -83,8 +100,38 @@
             }
           ],
           "address": "yes",
-          "status": "Pending",
+          "status": "Delivered",
           "time": "7/9/2025, 5:01:32 PM"
+        },
+        {
+          "id": "order_1752144238592",
+          "items": [
+            {
+              "id": "11",
+              "name": "Cricket Shoes",
+              "price": 1799,
+              "image": "https://contents.mediadecathlon.com/p2375147/9b725b5cf3f0196ee715376d2f2c0c56/p2375147.jpg?format=auto&quality=70&f=1024x0",
+              "category": "Cricket",
+              "quantity": 3,
+              "status": "Pending",
+              "time": "7/10/2025, 4:13:58 PM",
+              "address": "ASD"
+            },
+            {
+              "id": "12",
+              "name": "Chelsea Club Jersey",
+              "price": 1399,
+              "image": "https://m.media-amazon.com/images/I/71ccn1Ko-rL._SX679_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/10/2025, 4:13:58 PM",
+              "address": "ASD"
+            }
+          ],
+          "address": "ASD",
+          "status": "Delivered",
+          "time": "7/10/2025, 4:13:58 PM"
         }
       ]
     },
@@ -95,6 +142,125 @@
       "password": "admin123",
       "role": "admin",
       "isBlock": false
+    },
+    {
+      "id": "e136",
+      "name": "Ashfaque",
+      "email": "asdf@gmail.com",
+      "password": "asdfghjkl",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "wishlist": [],
+      "orders": [
+        {
+          "id": "order_1752145151141",
+          "items": [
+            {
+              "id": "1",
+              "name": "Cricket Bat",
+              "price": 1499,
+              "image": "https://m.media-amazon.com/images/I/6164TY9DCtL._SX679_.jpg",
+              "category": "Cricket",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/10/2025, 4:29:11 PM",
+              "address": "kozhikod"
+            }
+          ],
+          "address": "kozhikod",
+          "status": "Pending",
+          "time": "7/10/2025, 4:29:11 PM"
+        },
+        {
+          "id": "order_1752145218042",
+          "items": [
+            {
+              "id": "7",
+              "name": "FC Barcelona Jersey",
+              "price": 1199,
+              "image": "https://m.media-amazon.com/images/I/510JAsqKD6L._AC_UL480_FMwebp_QL65_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/10/2025, 4:30:18 PM",
+              "address": "kasaragod"
+            }
+          ],
+          "address": "kasaragod",
+          "status": "Pending",
+          "time": "7/10/2025, 4:30:18 PM"
+        },
+        {
+          "id": "order_1752145245743",
+          "items": [
+            {
+              "id": "6",
+              "name": "Real Madrid Jersey",
+              "price": 1299,
+              "image": "https://m.media-amazon.com/images/I/71cZWxhfwcL._AC_UL480_FMwebp_QL65_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/10/2025, 4:30:45 PM",
+              "address": "mumbai"
+            }
+          ],
+          "address": "mumbai",
+          "status": "Pending",
+          "time": "7/10/2025, 4:30:45 PM"
+        }
+      ]
+    },
+    {
+      "id": "41b0",
+      "name": "adnan",
+      "email": "ad@gmail.com",
+      "password": "adnan123",
+      "role": "user",
+      "isBlock": false,
+      "cart": [],
+      "wishlist": [],
+      "orders": [
+        {
+          "id": "order_1752145544244",
+          "items": [
+            {
+              "id": "2",
+              "name": "Nivia Storm Football - Size 5 (White), Rubber",
+              "price": 999,
+              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/10/2025, 4:35:44 PM",
+              "address": "delhi"
+            }
+          ],
+          "address": "delhi",
+          "status": "Delivered",
+          "time": "7/10/2025, 4:35:44 PM"
+        },
+        {
+          "id": "order_1752145570901",
+          "items": [
+            {
+              "id": "9",
+              "name": "Adidas Running Shoes",
+              "price": 3499,
+              "image": "https://m.media-amazon.com/images/I/618RT+-tqHL._AC_SR230,210_CB1169409_QL70_.jpg",
+              "category": "Shoes",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/10/2025, 4:36:10 PM",
+              "address": "delhi"
+            }
+          ],
+          "address": "delhi",
+          "status": "Delivered",
+          "time": "7/10/2025, 4:36:10 PM"
+        }
+      ]
     }
   ],
   "products": [

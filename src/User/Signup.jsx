@@ -119,7 +119,7 @@ const Signup = () => {
                 />
               </div>
 
-              <Button type="submit" text={isSubmitting ? "Signing up..." : "Sign up"} />
+              <Button type="submit"  text={isSubmitting ? "Signing up..." : "Sign up"} />
             </Form>
           )}
         </Formik>
