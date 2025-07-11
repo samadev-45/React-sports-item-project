@@ -55,12 +55,7 @@ const Checkout = () => {
     }
   };
 
-  const removeFromCart = (id) => {
-    const confirmed = window.confirm("Are you sure you want to remove this item?");
-    if (confirmed) {
-      setCart(cart.filter((item) => item.id !== id));
-    }
-  };
+  
 
   if (orderSuccess) {
     return (
@@ -115,12 +110,7 @@ const Checkout = () => {
             </div>
             <div className="flex items-center gap-4">
               <div>₹{item.price * item.quantity}</div>
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="text-sm text-red-500 hover:underline"
-              >
-                Remove
-              </button>
+              
             </div>
           </div>
         ))}

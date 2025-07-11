@@ -5,20 +5,18 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../context/MyContext";
 import api from "../services/api";
-import { useAdmin } from "../context/AdminContext";
+import { useAdmin} from '../context/AdminContext'
 
 const Login = () => {
-  const { setUser } = useContext(AuthContext);
+  const { login } = useContext(AuthContext); 
   const { setAdmin } = useAdmin();
   const navigate = useNavigate();
 
-  // ✅ Validation schema
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
 
-  // ✅ Form submission logic
   const handleSubmit = async (values, { setSubmitting }) => {
     const { email, password } = values;
     setSubmitting(true);
@@ -29,15 +27,19 @@ const Login = () => {
         const user = res.data[0];
 
         if (user.role === "admin") {
-          setAdmin(user); // set context
-          localStorage.setItem("adminId", user.id); 
+          setAdmin(user);
+          localStorage.setItem("adminId", user.id);
           toast.success("Welcome, Admin!");
           navigate("/admin/dashboard");
         } else {
-          setUser(user); // set context
-          localStorage.setItem("userId", user.id); 
-          toast.success("Login successful!");
-          navigate("/");
+          // Use login from AuthContext
+          const result = await login(email, password);
+
+          if (result.success) {
+            navigate("/");
+          } else if (result.blocked) {
+            
+          }
         }
       } else {
         toast.error("Invalid credentials");

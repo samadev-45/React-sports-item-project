@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import {
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
@@ -11,7 +9,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
@@ -24,8 +21,7 @@ const Dashboard = () => {
     products: 0,
     orders: 0,
     revenue: 0,
-    activeUsers: 0,
-    newCustomers: 0
+    newCustomers: 0,
   });
   const [last7DaysData, setLast7DaysData] = useState([]);
   const [orderStatusData, setOrderStatusData] = useState([]);
@@ -39,15 +35,14 @@ const Dashboard = () => {
         setLoading(true);
         const [usersRes, productsRes] = await Promise.all([
           api.get("/users"),
-          api.get("/products")
+          api.get("/products"),
         ]);
 
         const users = usersRes.data;
         const products = productsRes.data;
 
-        const userList = users.filter((user) => user.role === "user");
-        const activeUsers = userList.filter(u => u.lastLogin > new Date(Date.now() - 30*24*60*60*1000)).length;
-        const newCustomers = userList.filter(u => new Date(u.createdAt) > new Date(Date.now() - 7*24*60*60*1000)).length;
+        const userList = users.filter((user) => user.role === "user"); //filter user
+        
 
         let orderCount = 0;
         let revenue = 0;
@@ -61,10 +56,10 @@ const Dashboard = () => {
           const date = new Date(today);
           date.setDate(today.getDate() - i);
           const key = date.toISOString().split("T")[0];
-          last7Map[key] = { 
-            date: date.toLocaleDateString('en-US', { weekday: 'short' }), 
-            quantity: 0, 
-            revenue: 0 
+          last7Map[key] = {
+            date: date.toLocaleDateString("en-US", { weekday: "short" }),
+            quantity: 0,
+            revenue: 0,
           };
         }
 
@@ -72,13 +67,16 @@ const Dashboard = () => {
           const orders = user.orders || [];
           orderCount += orders.length;
 
-          orders.slice(0, 3).forEach(order => {
+          orders.slice(0, 3).forEach((order) => {
             recentOrdersList.push({
               id: order.id,
               customer: user.name,
-              amount: order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+              amount: order.items.reduce(
+                (sum, item) => sum + item.price * item.quantity,
+                0
+              ),
               status: order.status,
-              date: new Date(order.time).toLocaleDateString()
+              date: new Date(order.time).toLocaleDateString(),
             });
           });
 
@@ -93,7 +91,8 @@ const Dashboard = () => {
                 last7Map[dateKey].quantity += item.quantity;
                 last7Map[dateKey].revenue += orderRevenue;
               }
-              productSales[item.name] = (productSales[item.name] || 0) + item.quantity;
+              productSales[item.name] =
+                (productSales[item.name] || 0) + item.quantity;
             });
           });
         });
@@ -115,8 +114,8 @@ const Dashboard = () => {
           products: products.length,
           orders: orderCount,
           revenue,
-          activeUsers,
-          newCustomers
+
+          
         });
         setLast7DaysData(Object.values(last7Map));
         setOrderStatusData(pieData);
@@ -144,42 +143,45 @@ const Dashboard = () => {
     <div className="p-6 space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DashboardCard 
-          title="Total Users" 
-          value={stats.users} 
-          icon="👥" 
-          trend={stats.newCustomers > 0 ? `+${stats.newCustomers} new` : ""}
+        <DashboardCard
+          title="Total Users"
+          value={stats.users}
+          icon="👥"
+         
           color="bg-blue-100"
         />
-        <DashboardCard 
-          title="Active Users" 
-          value={stats.activeUsers} 
-          icon="🔥" 
-          trend={`${Math.round((stats.activeUsers/stats.users)*100)}% active`}
+        <DashboardCard
+          title="Total Orders"
+          value={stats.orders}
+          icon="📦"
+          trend="All time"
           color="bg-green-100"
         />
-        <DashboardCard 
-          title="Total Products" 
-          value={stats.products} 
-          icon="🏀" 
+        <DashboardCard
+          title="Total Products"
+          value={stats.products}
+          icon="🏀"
           color="bg-purple-100"
         />
-        <DashboardCard 
-          title="Total Revenue" 
-          value={`₹${stats.revenue.toLocaleString()}`} 
-          icon="💰" 
+        <DashboardCard
+          title="Total Revenue"
+          value={`₹${stats.revenue.toLocaleString()}`}
+          icon="💰"
           trend="All time"
           color="bg-yellow-100"
         />
       </div>
 
+      {/* Weekly Sales Chart and Order Status Pie */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Sales Chart */}
         <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">Weekly Sales Performance</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              Weekly Sales Performance
+            </h2>
             <span className="text-sm text-gray-500">
-              Total: {last7DaysData.reduce((acc, cur) => acc + cur.quantity, 0)} items
+              Total:{" "}
+              {last7DaysData.reduce((acc, cur) => acc + cur.quantity, 0)} items
             </span>
           </div>
           <div className="h-64">
@@ -188,17 +190,17 @@ const Dashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" />
                 <YAxis />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white',
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                   }}
                 />
-                <Bar 
-                  dataKey="quantity" 
-                  fill="#ef4444" 
-                  radius={[4, 4, 0, 0]} 
+                <Bar
+                  dataKey="quantity"
+                  fill="#ef4444"
+                  radius={[4, 4, 0, 0]}
                   barSize={24}
                 />
               </BarChart>
@@ -206,9 +208,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Order Status */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Order Status</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            Order Status
+          </h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -221,18 +224,23 @@ const Dashboard = () => {
                   innerRadius={60}
                   outerRadius={80}
                   paddingAngle={2}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {orderStatusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
-                <Tooltip 
-                  formatter={(value) => [`${value} orders`, 'Count']}
-                  contentStyle={{ 
-                    backgroundColor: 'white',
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                <Tooltip
+                  formatter={(value) => [`${value} orders`, "Count"]}
+                  contentStyle={{
+                    backgroundColor: "white",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                   }}
                 />
               </PieChart>
@@ -241,14 +249,20 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Top Selling & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Selling Products */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Top Selling Products</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            Top Selling Products
+          </h2>
           <div className="space-y-4">
             {topSellingItems.map((item, idx) => (
               <div key={idx} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${COLORS[idx % COLORS.length]} bg-opacity-20`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
+                    COLORS[idx % COLORS.length]
+                  } bg-opacity-20`}
+                >
                   <span className="text-lg">🏆</span>
                 </div>
                 <div className="flex-1">
@@ -256,30 +270,47 @@ const Dashboard = () => {
                   <p className="text-sm text-gray-500">{item.quantity} sold</p>
                 </div>
                 <div className="text-red-500 font-medium">
-                  {Math.round((item.quantity / topSellingItems[0].quantity) * 100)}%
+                  {Math.round(
+                    (item.quantity / topSellingItems[0].quantity) * 100
+                  )}
+                  %
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Recent Orders */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Recent Orders</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            Recent Orders
+          </h2>
           <div className="space-y-4">
             {recentOrders.map((order, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+              <div
+                key={idx}
+                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition"
+              >
                 <div>
-                  <h3 className="font-medium text-gray-800">Order #{order.id.slice(0, 8)}</h3>
-                  <p className="text-sm text-gray-500">{order.customer} • {order.date}</p>
+                  <h3 className="font-medium text-gray-800">
+                    Order #{order.id.slice(0, 8)}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {order.customer} • {order.date}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">₹{order.amount.toLocaleString()}</p>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                    order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                  <p className="font-medium">
+                    ₹{order.amount.toLocaleString()}
+                  </p>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      order.status === "Delivered"
+                        ? "bg-green-100 text-green-800"
+                        : order.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
                     {order.status}
                   </span>
                 </div>
@@ -293,7 +324,9 @@ const Dashboard = () => {
 };
 
 const DashboardCard = ({ title, value, icon, trend, color }) => (
-  <div className={`${color} p-5 rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md`}>
+  <div
+    className={`${color} p-5 rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md`}
+  >
     <div className="flex justify-between items-start">
       <div>
         <p className="text-sm font-medium text-gray-600">{title}</p>
@@ -302,9 +335,7 @@ const DashboardCard = ({ title, value, icon, trend, color }) => (
       <span className="text-2xl">{icon}</span>
     </div>
     {trend && (
-      <p className="text-xs mt-2 font-medium text-gray-500">
-        {trend}
-      </p>
+      <p className="text-xs mt-2 font-medium text-gray-500">{trend}</p>
     )}
   </div>
 );

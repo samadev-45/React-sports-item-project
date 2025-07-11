@@ -17,7 +17,7 @@ const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar - Sporty Design */}
+      
       <aside className="w-64 bg-gradient-to-b from-gray-900 to-gray-800 shadow-xl p-5 flex flex-col">
         <div className="flex items-center mb-8">
           <div className="bg-red-500 p-2 rounded-lg mr-3">
@@ -87,7 +87,7 @@ const AdminLayout = () => {
           </NavLink>
         </nav>
 
-        {/* Admin Profile & Logout */}
+            {/* admin section  */}
         <div className="mt-auto pt-4 border-t border-gray-700">
           <div className="flex items-center mb-4">
             <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">

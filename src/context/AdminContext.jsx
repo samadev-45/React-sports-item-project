@@ -5,7 +5,7 @@ const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
-  const [loading, setLoading] = useState(true); // 👈 add this
+  const [loading, setLoading] = useState(true); //  add this for checking admin is login or not
 
   useEffect(() => {
     const adminId = localStorage.getItem("adminId");
@@ -17,9 +17,9 @@ export const AdminProvider = ({ children }) => {
           console.error("Failed to fetch admin by ID", err);
           localStorage.removeItem("adminId");
         })
-        .finally(() => setLoading(false)); // ✅ finish loading
+        .finally(() => setLoading(false)); //  finish loading
     } else {
-      setLoading(false); // ✅ no admin stored
+      setLoading(false); //  no admin stored
     }
   }, []);
 
