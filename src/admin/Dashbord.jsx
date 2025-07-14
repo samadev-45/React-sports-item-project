@@ -40,8 +40,8 @@ const Dashboard = () => {
 
         const users = usersRes.data;
         const products = productsRes.data;
-
-        const userList = users.filter((user) => user.role === "user"); //filter user
+        
+        const userList = users.filter((user) => user.role === "user"); 
         
 
         let orderCount = 0;

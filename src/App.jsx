@@ -7,6 +7,7 @@ import AdminLayout from "./admin/AdminLayout";
 import "./App.css";
 import EditProduct from "./admin/EditProduct";
 import AddProduct from "./admin/AddProduct";
+import UserDetails from "./admin/UserDetails";
 
 // User Pages
 const Signup = lazy(() => import("./User/Signup"));
@@ -122,6 +123,8 @@ function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="products/edit/:id" element={<EditProduct />} />
             <Route path="/admin/products/add" element={<AddProduct />} />
+            <Route path="/admin/users/:id" element={<UserDetails />} />
+
 
           </Route>
         </Routes>
