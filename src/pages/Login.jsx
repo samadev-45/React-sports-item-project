@@ -32,7 +32,7 @@ const Login = () => {
           toast.success("Welcome, Admin!");
           navigate("/admin/dashboard");
         } else {
-          // Use login from AuthContext
+          
           const result = await login(email, password);
 
           if (result.success) {

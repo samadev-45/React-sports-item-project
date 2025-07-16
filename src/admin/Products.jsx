@@ -61,10 +61,10 @@ const AdminProducts = () => {
 
   useEffect(() => {
     handleSearch(searchTerm);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [searchTerm, categoryFilter, products]);
 
-  // Pagination logic
+  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = filteredProducts.slice(

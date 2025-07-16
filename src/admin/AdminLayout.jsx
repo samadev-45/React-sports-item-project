@@ -66,7 +66,7 @@ const AdminLayout = () => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      {/* Mobile Top Navbar */}
+      
       <div className="md:hidden bg-gray-900 text-white flex items-center justify-between p-4 shadow-md">
         <h2 className="text-xl font-bold">Sporty Admin</h2>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>

@@ -9,23 +9,15 @@
       "isBlock": false,
       "cart": [
         {
-          "id": "2",
-          "name": "Nivia Storm Football - Size 5 (White), Rubber",
-          "price": 999,
-          "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
-          "category": "Football",
+          "id": "3",
+          "name": "Tennis Racket",
+          "price": 1999,
+          "image": "https://scssports.in/cdn/shop/files/Burn_Pro_PS13_Badminton_Racket_d1da6f79-7a3f-4161-961d-1d72abce3bac.jpg?v=1735299406",
+          "category": "Tennis",
           "quantity": 1
         }
       ],
-      "wishlist": [
-        {
-          "id": "1",
-          "name": "Cricket Bat",
-          "price": 1499,
-          "image": "https://m.media-amazon.com/images/I/6164TY9DCtL._SX679_.jpg",
-          "category": "Cricket"
-        }
-      ],
+      "wishlist": [],
       "orders": [
         {
           "id": "order_1751866695043",
@@ -162,6 +154,47 @@
           "address": "Kollam",
           "status": "Pending",
           "time": "7/11/2025, 10:02:45 AM"
+        },
+        {
+          "id": "order_1752588697148",
+          "items": [
+            {
+              "id": "2",
+              "name": "Nivia Storm Football - Size 5 (White), Rubber",
+              "price": 999,
+              "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
+              "category": "Football",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/15/2025, 7:41:37 PM",
+              "address": "kozhikode"
+            },
+            {
+              "id": "19",
+              "name": "Basketball",
+              "price": 1099,
+              "image": "https://i.pinimg.com/1200x/ac/52/ff/ac52ff038a1375463bc139df779b2bf2.jpg",
+              "category": "Basketball",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/15/2025, 7:41:37 PM",
+              "address": "kozhikode"
+            },
+            {
+              "id": "1",
+              "name": "Cricket Bat",
+              "price": 1499,
+              "image": "https://m.media-amazon.com/images/I/6164TY9DCtL._SX679_.jpg",
+              "category": "Cricket",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/15/2025, 7:41:37 PM",
+              "address": "kozhikode"
+            }
+          ],
+          "address": "kozhikode",
+          "status": "Pending",
+          "time": "7/15/2025, 7:41:37 PM"
         }
       ]
     },
@@ -199,7 +232,7 @@
             }
           ],
           "address": "kozhikod",
-          "status": "Pending",
+          "status": "Delivered",
           "time": "7/10/2025, 4:29:11 PM"
         },
         {
@@ -218,7 +251,7 @@
             }
           ],
           "address": "kasaragod",
-          "status": "Pending",
+          "status": "Delivered",
           "time": "7/10/2025, 4:30:18 PM"
         },
         {
