@@ -7,17 +7,17 @@
       "password": "123456",
       "role": "user",
       "isBlock": false,
-      "cart": [
+      "cart": [],
+      "wishlist": [
         {
-          "id": "3",
-          "name": "Tennis Racket",
-          "price": 1999,
-          "image": "https://scssports.in/cdn/shop/files/Burn_Pro_PS13_Badminton_Racket_d1da6f79-7a3f-4161-961d-1d72abce3bac.jpg?v=1735299406",
-          "category": "Tennis",
-          "quantity": 1
+          "id": "05f6",
+          "name": "Asco Dream Football shoes",
+          "price": "1799",
+          "category": "Football",
+          "image": "https://i.pinimg.com/736x/41/cf/02/41cf029e2ff49f68ccaec1d649100d9f.jpg",
+          "description": "Note:Kindly refer to the size details for fitting measurements.Check the Size Chart to get perfect fit for you! Synthetic leather upper offers lightweight,durable and comfortable fit with a soft touch on the ball. Comfortable and friendly inside mesh,always keep your feet dry and comfortable,let you enjoy the freedom to move. Designed with a sock mouth,it is easy to put on and take off.Tongueless construction wraps the foot give you a different experience. Sole made by quality rubber,the friction design easy control of the soccer.Natural rubber sole wear-resisting & non-slip and keep safety in sprint."
         }
       ],
-      "wishlist": [],
       "orders": [
         {
           "id": "order_1751866695043",
@@ -193,8 +193,38 @@
             }
           ],
           "address": "kozhikode",
-          "status": "Pending",
+          "status": "Delivered",
           "time": "7/15/2025, 7:41:37 PM"
+        },
+        {
+          "id": "order_1752920762004",
+          "items": [
+            {
+              "id": "3",
+              "name": "Tennis Racket",
+              "price": 1999,
+              "image": "https://scssports.in/cdn/shop/files/Burn_Pro_PS13_Badminton_Racket_d1da6f79-7a3f-4161-961d-1d72abce3bac.jpg?v=1735299406",
+              "category": "Tennis",
+              "quantity": 4,
+              "status": "Pending",
+              "time": "7/19/2025, 3:56:01 PM",
+              "address": "xyz"
+            },
+            {
+              "id": "19",
+              "name": "Basketball",
+              "price": 1099,
+              "image": "https://i.pinimg.com/1200x/ac/52/ff/ac52ff038a1375463bc139df779b2bf2.jpg",
+              "category": "Basketball",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "7/19/2025, 3:56:01 PM",
+              "address": "xyz"
+            }
+          ],
+          "address": "xyz",
+          "status": "Pending",
+          "time": "7/19/2025, 3:56:01 PM"
         }
       ]
     },
@@ -384,7 +414,7 @@
             }
           ],
           "address": "Hyderabad",
-          "status": "Pending",
+          "status": "Delivered",
           "time": "7/11/2025, 2:04:51 PM"
         },
         {
@@ -651,6 +681,14 @@
       "category": "Football",
       "image": "https://i.pinimg.com/736x/41/cf/02/41cf029e2ff49f68ccaec1d649100d9f.jpg",
       "description": "Note:Kindly refer to the size details for fitting measurements.Check the Size Chart to get perfect fit for you! Synthetic leather upper offers lightweight,durable and comfortable fit with a soft touch on the ball. Comfortable and friendly inside mesh,always keep your feet dry and comfortable,let you enjoy the freedom to move. Designed with a sock mouth,it is easy to put on and take off.Tongueless construction wraps the foot give you a different experience. Sole made by quality rubber,the friction design easy control of the soccer.Natural rubber sole wear-resisting & non-slip and keep safety in sprint."
+    },
+    {
+      "id": "85ce",
+      "name": "Shoe",
+      "price": "2000",
+      "category": "cricket",
+      "image": "https://i.pinimg.com/736x/41/cf/02/41cf029e2ff49f68ccaec1d649100d9f.jpg",
+      "description": "cricket"
     }
   ]
 }
