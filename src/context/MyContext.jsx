@@ -2,14 +2,15 @@
 import { createContext, useState, useEffect } from "react";
 import api from "../services/api";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState(Cookies.get("accessToken") || null);
 
-  // Set Authorization header whenever token changes
+  // Attach token whenever it changes
   useEffect(() => {
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -20,59 +21,70 @@ export const AuthProvider = ({ children }) => {
 
   // ---------------- Signup ----------------
   const register = async (values) => {
-  try {
-    const res = await api.post("/Auth/register", values);
+    try {
+      const res = await api.post("/Auth/register", values, { withCredentials: true });
 
-    // Assuming backend now returns proper status & message
-    if (res.status === 200 && res.data?.success) {
-      return {
-        success: true,
-        message: res.data?.message || "Signup successful!",
-      };
+      if (res.status === 200 && res.data?.success) {
+        return { success: true, message: res.data?.message || "Signup successful!" };
+      }
+
+      return { success: false, exists: res.data?.message?.includes("exists") || false, message: res.data?.message || "Registration failed" };
+    } catch (err) {
+      console.error("Register error:", err);
+      return { success: false, message: err.response?.data?.message || "Something went wrong" };
     }
-
-    // Backend can send 400 for existing email
-    return {
-      success: false,
-      exists: res.data?.message?.includes("exists") || false,
-      message: res.data?.message || "Registration failed",
-    };
-  } catch (err) {
-    console.error("Register error:", err);
-    return {
-      success: false,
-      message: err.response?.data?.message || "Something went wrong",
-    };
-  }
-};
-
+  };
 
   // ---------------- Login ----------------
   const login = async (email, password) => {
     try {
-      const res = await api.post("/Auth/login", { email, password });
-      if (res.data?.data?.token) {
-        const jwtToken = res.data.data.token;
-        setToken(jwtToken);
-        localStorage.setItem("token", jwtToken);
+      // withCredentials ensures backend sets HttpOnly cookies
+      const res = await api.post("/Auth/login", { email, password }, { withCredentials: true });
+
+      if (res.data?.success) {
+        const userData = res.data.data;
+
+        // Optionally store access token in cookie (non-HttpOnly, for frontend use)
+        Cookies.set("accessToken", userData.token, { expires: 1, secure: true, sameSite: "strict" });
+        Cookies.set("refreshToken", userData.refreshToken, { expires: 7, secure: true, sameSite: "strict" });
+
+        setToken(userData.token);
+        setUser({
+          userId: userData.userId,
+          email: userData.email,
+          role: userData.role,
+          name: userData.name,
+        });
+
         toast.success(res.data.message || "Login successful!");
-        return true;
+        return { success: true, data: userData };
       } else {
         toast.error(res.data?.message || "Invalid credentials");
-        return false;
+        return { success: false };
       }
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       toast.error(err.response?.data?.message || "Login failed");
-      return false;
+      return { success: false };
     }
   };
 
   // ---------------- Logout ----------------
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Revoke refresh token on backend
+      await api.post("/Auth/revoke", { refreshToken: Cookies.get("refreshToken") }, { withCredentials: true });
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+
     setUser(null);
     setToken(null);
-    localStorage.removeItem("token");
+
+    // Remove cookies
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+
     toast.success("Logged out successfully!");
   };
 

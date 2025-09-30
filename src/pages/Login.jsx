@@ -17,35 +17,31 @@ const Login = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  // Handle login
   const handleSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
+
     try {
-      // Call AuthContext login (which should POST to /Auth/login)
       const result = await login(values.email, values.password);
 
-      if (result?.success) {
-        const user = result.data; // assuming your AuthController returns user data
+      if (result.success) {
+        const user = result.data;
         if (user.role === "admin") {
-          // Admin login
           setAdmin(user);
-          localStorage.setItem("adminId", user.id);
+          localStorage.setItem("adminId", user.userId);
           toast.success("Welcome, Admin!");
           navigate("/admin/dashboard");
         } else {
-          // Normal user login
           toast.success("Login successful!");
-          navigate("/");
+          navigate("/"); // Redirect normal users
         }
-      } else if (result?.blocked) {
-        toast.error("Your account is blocked by admin!");
       } else {
-        toast.error("Invalid credentials");
+        toast.error("Invalid credentials or blocked account!");
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Login error:", err);
       toast.error("Login failed. Please try again.");
-      console.error("Login error:", error);
     }
+
     setSubmitting(false);
   };
 
