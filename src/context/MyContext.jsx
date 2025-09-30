@@ -1,4 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+// src/context/MyContext.jsx
+import { createContext, useState, useEffect } from "react";
 import api from "../services/api";
 import { toast } from "react-toastify";
 
@@ -6,98 +7,77 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  // ✅ Load user on mount
+  // Set Authorization header whenever token changes
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-      api.get(`/users/${userId}`)
-        .then((res) => {
-          const userData = res.data;
-          if (userData.isBlock) {
-            // ✅ Immediately block access
-            toast.error("You are blocked by admin");
-            localStorage.removeItem("userId");
-            setUser(null);
-          } else {
-            setUser(userData);
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to fetch user", err);
-          localStorage.removeItem("userId");
-        });
-    }
-  }, []);
-
-  // ✅ Login
-  const login = async (email, password) => {
-  try {
-    const res = await api.get(`/users?email=${email}&password=${password}`);
-    if (res.data.length > 0) {
-      const userData = res.data[0];
-
-      if (userData.isBlock) {
-        toast.error("You are blocked by admin");
-        localStorage.removeItem("userId");
-        setUser(null);
-        return { success: false, blocked: true };
-      }
-
-      setUser(userData);
-      localStorage.setItem("userId", userData.id);
-      toast.success("Login successful!");
-      return { success: true };
+    if (token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
-      toast.error("Invalid credentials!");
-      return { success: false };
+      delete api.defaults.headers.common["Authorization"];
     }
+  }, [token]);
+
+  // ---------------- Signup ----------------
+  const register = async (values) => {
+  try {
+    const res = await api.post("/Auth/register", values);
+
+    // Assuming backend now returns proper status & message
+    if (res.status === 200 && res.data?.success) {
+      return {
+        success: true,
+        message: res.data?.message || "Signup successful!",
+      };
+    }
+
+    // Backend can send 400 for existing email
+    return {
+      success: false,
+      exists: res.data?.message?.includes("exists") || false,
+      message: res.data?.message || "Registration failed",
+    };
   } catch (err) {
-    console.error(err);
-    toast.error("Login failed. Please try again.");
-    return { success: false };
+    console.error("Register error:", err);
+    return {
+      success: false,
+      message: err.response?.data?.message || "Something went wrong",
+    };
   }
 };
 
 
-  // ✅ Register
-  const register = async (newUser) => {
+  // ---------------- Login ----------------
+  const login = async (email, password) => {
     try {
-      const res = await api.get(`/users?email=${newUser.email}`);
-      if (res.data.length > 0) {
-        toast.warning("Email already exists!");
+      const res = await api.post("/Auth/login", { email, password });
+      if (res.data?.data?.token) {
+        const jwtToken = res.data.data.token;
+        setToken(jwtToken);
+        localStorage.setItem("token", jwtToken);
+        toast.success(res.data.message || "Login successful!");
+        return true;
+      } else {
+        toast.error(res.data?.message || "Invalid credentials");
         return false;
       }
-
-      const userData = {
-        ...newUser,
-        role: "user",
-        isBlock: false,
-        cart: [],
-        wishlist: [],
-        orders: [],
-      };
-
-      const postRes = await api.post("/users", userData);
-      setUser(postRes.data);
-      localStorage.setItem("userId", postRes.data.id);
-      toast.success("Signup successful!");
-      return true;
     } catch (err) {
-      toast.error("Signup failed. Please try again.");
+      console.error(err);
+      toast.error(err.response?.data?.message || "Login failed");
       return false;
     }
   };
 
-  // ✅ Logout
+  // ---------------- Logout ----------------
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("userId");
+    setToken(null);
+    localStorage.removeItem("token");
     toast.success("Logged out successfully!");
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout }}>
+    <AuthContext.Provider value={{ user, setUser, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

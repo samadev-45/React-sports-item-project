@@ -4,51 +4,48 @@ import { toast } from "react-toastify";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../context/MyContext";
-import api from "../services/api";
-import { useAdmin} from '../context/AdminContext'
+import { useAdmin } from "../context/AdminContext";
 
 const Login = () => {
-  const { login } = useContext(AuthContext); 
+  const { login } = useContext(AuthContext);
   const { setAdmin } = useAdmin();
   const navigate = useNavigate();
 
+  // Validation schema
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
 
+  // Handle login
   const handleSubmit = async (values, { setSubmitting }) => {
-    const { email, password } = values;
     setSubmitting(true);
-
     try {
-      const res = await api.get(`/users?email=${email}&password=${password}`);
-      if (res.data.length > 0) {
-        const user = res.data[0];
+      // Call AuthContext login (which should POST to /Auth/login)
+      const result = await login(values.email, values.password);
 
+      if (result?.success) {
+        const user = result.data; // assuming your AuthController returns user data
         if (user.role === "admin") {
+          // Admin login
           setAdmin(user);
           localStorage.setItem("adminId", user.id);
           toast.success("Welcome, Admin!");
           navigate("/admin/dashboard");
         } else {
-          
-          const result = await login(email, password);
-
-          if (result.success) {
-            navigate("/");
-          } else if (result.blocked) {
-            
-          }
+          // Normal user login
+          toast.success("Login successful!");
+          navigate("/");
         }
+      } else if (result?.blocked) {
+        toast.error("Your account is blocked by admin!");
       } else {
         toast.error("Invalid credentials");
       }
     } catch (error) {
-      toast.error("Login failed");
+      toast.error("Login failed. Please try again.");
       console.error("Login error:", error);
     }
-
     setSubmitting(false);
   };
 
@@ -66,6 +63,7 @@ const Login = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-5">
+              {/* Email */}
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <Field
@@ -81,6 +79,7 @@ const Login = () => {
                 />
               </div>
 
+              {/* Password */}
               <div>
                 <label className="block text-sm font-medium mb-1">Password</label>
                 <Field
@@ -96,6 +95,7 @@ const Login = () => {
                 />
               </div>
 
+              {/* Actions */}
               <div className="flex justify-between items-center">
                 <button
                   type="submit"

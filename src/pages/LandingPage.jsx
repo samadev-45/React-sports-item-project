@@ -6,12 +6,16 @@ import api from "../services/api";
 function LandingPage() {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    api
-      .get("/products")
-      .then((res) => setProducts(res.data.slice(0, 4)))
-      .catch((err) => console.error("Error fetching products", err));
-  }, []);
+ useEffect(() => {
+  api
+    .get("/products")
+    .then((res) => {
+      const productsArray = res.data.data; //  get the actual array
+      setProducts(productsArray.slice(0, 4));
+    })
+    .catch((err) => console.error("Error fetching products", err));
+}, []);
+
 
   return (
     <div className="min-h-screen bg-gray-50">

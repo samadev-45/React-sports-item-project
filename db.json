@@ -7,17 +7,17 @@
       "password": "123456",
       "role": "user",
       "isBlock": false,
-      "cart": [],
-      "wishlist": [
+      "cart": [
         {
-          "id": "05f6",
-          "name": "Asco Dream Football shoes",
-          "price": "1799",
+          "id": "2",
+          "name": "Nivia Storm Football - Size 5 (White), Rubber",
+          "price": 999,
+          "image": "https://m.media-amazon.com/images/I/61RpRYFb2wL._SL1100_.jpg",
           "category": "Football",
-          "image": "https://i.pinimg.com/736x/41/cf/02/41cf029e2ff49f68ccaec1d649100d9f.jpg",
-          "description": "Note:Kindly refer to the size details for fitting measurements.Check the Size Chart to get perfect fit for you! Synthetic leather upper offers lightweight,durable and comfortable fit with a soft touch on the ball. Comfortable and friendly inside mesh,always keep your feet dry and comfortable,let you enjoy the freedom to move. Designed with a sock mouth,it is easy to put on and take off.Tongueless construction wraps the foot give you a different experience. Sole made by quality rubber,the friction design easy control of the soccer.Natural rubber sole wear-resisting & non-slip and keep safety in sprint."
+          "quantity": 2
         }
       ],
+      "wishlist": [],
       "orders": [
         {
           "id": "order_1751866695043",
@@ -225,6 +225,26 @@
           "address": "xyz",
           "status": "Pending",
           "time": "7/19/2025, 3:56:01 PM"
+        },
+        {
+          "id": "order_1757928758719",
+          "items": [
+            {
+              "id": "05f6",
+              "name": "Asco Dream Football shoes",
+              "price": "1799",
+              "category": "Football",
+              "image": "https://i.pinimg.com/736x/41/cf/02/41cf029e2ff49f68ccaec1d649100d9f.jpg",
+              "description": "Note:Kindly refer to the size details for fitting measurements.Check the Size Chart to get perfect fit for you! Synthetic leather upper offers lightweight,durable and comfortable fit with a soft touch on the ball. Comfortable and friendly inside mesh,always keep your feet dry and comfortable,let you enjoy the freedom to move. Designed with a sock mouth,it is easy to put on and take off.Tongueless construction wraps the foot give you a different experience. Sole made by quality rubber,the friction design easy control of the soccer.Natural rubber sole wear-resisting & non-slip and keep safety in sprint.",
+              "quantity": 1,
+              "status": "Pending",
+              "time": "9/15/2025, 3:02:38 PM",
+              "address": "kzkd"
+            }
+          ],
+          "address": "kzkd",
+          "status": "Pending",
+          "time": "9/15/2025, 3:02:38 PM"
         }
       ]
     },

@@ -29,15 +29,26 @@ const Signup = () => {
 
   // Form submit function
   const handleSubmit = async (values, { setSubmitting }) => {
-    const success = await register(values);
-    setSubmitting(false);
+  try {
+    const res = await register(values);
 
-    if (success) {
-      navigate("/login");
+    if (res.success) {
+      toast.success(res.message);
+      navigate("/login"); // only redirect on success
+    } else if (res.exists) {
+      toast.warning(res.message);
+      navigate("/login"); // redirect to login if email exists
     } else {
-      toast.error("Registration failed. Try again.");
+      toast.error(res.message);
     }
-  };
+  } catch (err) {
+    toast.error("Something went wrong!");
+    console.error(err);
+  } finally {
+    setSubmitting(false); // reset form state
+  }
+};
+
 
   return (
     <div style={{ height: "100vh", display: "flex" }}>
@@ -119,7 +130,10 @@ const Signup = () => {
                 />
               </div>
 
-              <Button type="submit"  text={isSubmitting ? "Signing up..." : "Sign up"} />
+              <Button
+                type="submit"
+                text={isSubmitting ? "Signing up..." : "Sign up"}
+              />
             </Form>
           )}
         </Formik>
