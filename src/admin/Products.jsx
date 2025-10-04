@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import debounce from "lodash.debounce";
 
 const AdminProducts = () => {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]); // Full product list
+  const [filteredProducts, setFilteredProducts] = useState([]); // After search/filter
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,14 +15,19 @@ const AdminProducts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // Fetch all products
+  // Fetch all products safely
   const fetchProducts = async () => {
     try {
       const res = await api.get("/products");
-      setProducts(res.data);
-      setFilteredProducts(res.data);
+      console.log("API Response:", res.data); // Debug API response
+
+      // Make sure we always have an array
+      const productsArray = Array.isArray(res.data.data) ? res.data.data : [];
+      setProducts(productsArray);
+      setFilteredProducts(productsArray);
     } catch (err) {
       toast.error("Failed to fetch products");
+      console.error(err);
     }
   };
 
@@ -32,49 +37,53 @@ const AdminProducts = () => {
 
   // Handle delete confirmation
   const confirmDelete = async () => {
+    if (!selectedProduct) return;
     try {
       await api.delete(`/products/${selectedProduct.id}`);
       toast.success("Product deleted");
       fetchProducts();
     } catch (err) {
       toast.error("Failed to delete product");
+      console.error(err);
     } finally {
       setSelectedProduct(null);
     }
   };
 
-  // Debounced search
+  // Debounced search & filter
   const handleSearch = debounce((term) => {
-    const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(term.toLowerCase())
-    );
-    setFilteredProducts(
-      categoryFilter === "All"
-        ? filtered
-        : filtered.filter(
-            (product) =>
-              product.category.toLowerCase() === categoryFilter.toLowerCase()
-          )
-    );
+    let filtered = Array.isArray(products) ? products : [];
+    if (term) {
+      filtered = filtered.filter((p) =>
+        p.name.toLowerCase().includes(term.toLowerCase())
+      );
+    }
+    if (categoryFilter && categoryFilter !== "All") {
+      filtered = filtered.filter(
+        (p) => p.category.toLowerCase() === categoryFilter.toLowerCase()
+      );
+    }
+    setFilteredProducts(filtered);
     setCurrentPage(1);
   }, 300);
 
   useEffect(() => {
     handleSearch(searchTerm);
-    
   }, [searchTerm, categoryFilter, products]);
 
   // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = filteredProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+  const currentProducts = Array.isArray(filteredProducts)
+    ? filteredProducts.slice(indexOfFirstItem, indexOfLastItem)
+    : [];
+  const totalPages = Math.ceil(
+    Array.isArray(filteredProducts) ? filteredProducts.length : 0
   );
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   return (
     <div className="p-6">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <h2 className="text-2xl font-bold">Manage Products</h2>
         <div className="flex flex-col sm:flex-row gap-4">
@@ -106,6 +115,7 @@ const AdminProducts = () => {
         </div>
       </div>
 
+      {/* Product Grid */}
       {currentProducts.length === 0 ? (
         <p className="text-gray-500">No products found.</p>
       ) : (
@@ -116,22 +126,38 @@ const AdminProducts = () => {
                 key={product.id}
                 className="bg-white shadow-md rounded-lg overflow-hidden border hover:shadow-xl transition-shadow"
               >
+                {/* Main Image */}
                 <div className="flex justify-center items-center h-40 bg-white">
                   <img
-                    src={product.image}
+                    src={product.imagesBase64?.[0] || "/placeholder.png"}
                     alt={product.name}
                     className="h-full object-contain"
                   />
                 </div>
+
                 <div className="p-4">
                   <h3 className="text-lg font-semibold">{product.name}</h3>
-                  <p className="text-sm text-gray-500 mb-1">
-                    {product.category}
-                  </p>
-                  <p className="text-green-600 font-bold mb-3">
-                    ₹{product.price}
-                  </p>
+                  <p className="text-sm text-gray-500 mb-1">{product.category}</p>
+                  <p className="text-green-600 font-bold mb-3">₹{product.price}</p>
 
+                  {/* Thumbnail Gallery */}
+                  <div className="flex gap-2 mb-3">
+                    {product.imagesBase64?.slice(0, 3).map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`thumb-${idx}`}
+                        className="w-12 h-12 object-cover rounded border"
+                      />
+                    ))}
+                    {product.imagesBase64?.length > 3 && (
+                      <span className="text-xs text-gray-500 self-center">
+                        +{product.imagesBase64.length - 3} more
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Actions */}
                   <div className="flex gap-2">
                     <Link
                       to={`/admin/products/edit/${product.id}`}
@@ -151,7 +177,7 @@ const AdminProducts = () => {
             ))}
           </div>
 
-          {/* Pagination Controls */}
+          {/* Pagination */}
           <div className="flex justify-center items-center mt-6 gap-4">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
