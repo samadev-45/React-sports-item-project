@@ -1,13 +1,18 @@
 import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import { Link } from "react-router-dom";
 import ConfirmModal from "../components/ConfirmModal";
+import { toast } from "react-toastify";
+import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, summary, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
-
+  const { cart, summary, removeFromCart, updateQuantity, clearCart } =
+    useContext(CartContext);
   const [showModal, setShowModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(0); // 0 = COD, 1 = Online
+  const navigate = useNavigate();
 
   const handleRemove = (id) => {
     setItemToRemove(id);
@@ -17,6 +22,34 @@ const Cart = () => {
   const confirmRemove = () => {
     removeFromCart(itemToRemove);
     setShowModal(false);
+  };
+
+  const handlePlaceOrder = async () => {
+    if (cart.length === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await api.post("/Order/user/create", {
+        address: "Default address or user’s saved address",
+        paymentMethod, // 0 = COD, 1 = Online
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("✅ Order placed successfully!");
+        clearCart();
+        navigate("/Orders"); // Redirect to Orders page
+      } else {
+        toast.error("❌ Failed to place order. Try again.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("Server error while placing order");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (cart.length === 0) {
@@ -29,42 +62,48 @@ const Cart = () => {
 
   return (
     <div className="p-6 grid md:grid-cols-3 gap-6">
+      {/* CART ITEMS */}
       <div className="md:col-span-2">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">YOUR BAG</h2>
-          <button
-            className="text-red-500 hover:underline"
-            onClick={clearCart}
-          >
-            Clear Cart 
+          <button className="text-red-500 hover:underline" onClick={clearCart}>
+            Clear Cart
           </button>
         </div>
         <p className="mb-4 text-gray-600">
-          TOTAL ({summary.totalQuantity} item{summary.totalQuantity > 1 ? "s" : ""}) ₹
+          TOTAL ({summary.totalQuantity} item
+          {summary.totalQuantity > 1 ? "s" : ""}) ₹
           {summary.totalPrice.toFixed(2)}
         </p>
 
         {cart.map((item) => (
-          <div key={item.id} className="flex items-center justify-between border-t py-4">
+          <div
+            key={item.id}
+            className="flex items-center justify-between border-t py-4"
+          >
             <div className="flex items-center gap-4">
-              <img 
-                src={item.imageUrl || "/placeholder.png"} 
-                alt={item.productName} 
-                className="w-24 h-24 object-contain" 
+              <img
+                src={item.imageUrl || "/placeholder.png"}
+                alt={item.productName}
+                className="w-24 h-24 object-contain"
               />
               <div>
                 <p className="font-semibold">{item.productName}</p>
                 <p className="text-gray-600 text-sm">₹{item.price}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <button
-                    onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                    onClick={() =>
+                      updateQuantity(item.productId, item.quantity - 1)
+                    }
                     className="px-2 bg-gray-200 rounded text-xl font-bold"
                   >
                     -
                   </button>
                   <span className="px-3">{item.quantity}</span>
                   <button
-                    onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                    onClick={() =>
+                      updateQuantity(item.productId, item.quantity + 1)
+                    }
                     className="px-2 bg-gray-200 rounded text-xl font-bold"
                   >
                     +
@@ -87,8 +126,10 @@ const Cart = () => {
         ))}
       </div>
 
+      {/* ORDER SUMMARY */}
       <div className="border p-6 rounded shadow h-fit">
         <h3 className="text-xl font-bold mb-4">ORDER SUMMARY</h3>
+
         <div className="flex justify-between text-sm mb-2">
           <span>{summary.totalQuantity} item(s)</span>
           <span>₹{summary.totalPrice.toFixed(2)}</span>
@@ -102,15 +143,42 @@ const Cart = () => {
           <span>Total</span>
           <span>₹{summary.totalPrice.toFixed(2)}</span>
         </div>
-        <Link
-          to="/checkout"
-          className="w-full block bg-black text-white py-3 text-center rounded hover:bg-gray-800"
+
+        {/* Payment Method */}
+        <div className="mb-4">
+          <p className="font-semibold mb-2">Payment Method:</p>
+          <div className="flex flex-col gap-2">
+            <label>
+              <input
+                type="radio"
+                value={0}
+                checked={paymentMethod === 0}
+                onChange={() => setPaymentMethod(0)}
+              />{" "}
+              Cash on Delivery
+            </label>
+            <label>
+              <input
+                type="radio"
+                value={1}
+                checked={paymentMethod === 1}
+                onChange={() => setPaymentMethod(1)}
+              />{" "}
+              Online Payment
+            </label>
+          </div>
+        </div>
+
+        <button
+          onClick={handlePlaceOrder}
+          disabled={loading}
+          className="w-full bg-black text-white py-3 text-center rounded hover:bg-gray-800 disabled:opacity-50"
         >
-          CHECKOUT →
-        </Link>
+          {loading ? "Placing Order..." : "PLACE ORDER →"}
+        </button>
       </div>
 
-      {/* Modal */}
+      {/* Confirm Modal */}
       <ConfirmModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
