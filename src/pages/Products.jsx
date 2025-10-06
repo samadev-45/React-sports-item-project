@@ -109,14 +109,22 @@ const Products = () => {
                 >
                   {/* Wishlist button */}
                   <button
-                    type="button"
-                    onClick={() => toggleWishlist(item.id)}
-                    className={`absolute top-3 right-3 z-10 p-2 rounded-full ${
-                    isInWishlist ? "bg-red-100 text-red-500" : "bg-white text-gray-400"
-                    } shadow hover:bg-red-100 hover:text-red-500 transition-colors`}
-                      >
-                      <FaHeart size={16} />
-                    </button>
+  type="button"
+  onClick={() => {
+    console.log("❤️ Heart clicked for product:", item.id);
+    if (typeof toggleWishlist !== "function") {
+      console.error("❌ toggleWishlist is not a function! Check WishlistContext import/use.");
+      return;
+    }
+    toggleWishlist(item.id);
+  }}
+  className={`absolute top-3 right-3 z-10 p-2 rounded-full ${
+    isInWishlist ? "bg-red-100 text-red-500" : "bg-white text-gray-400"
+  } shadow hover:bg-red-100 hover:text-red-500 transition-colors`}
+>
+  <FaHeart size={16} />
+</button>
+
 
 
                   {/* Product Image */}

@@ -3,28 +3,21 @@ import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../context/MyContext";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
-import {
-  FaHeart,
-  FaUser,
-  FaShoppingCart,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+import { FaHeart, FaUser, FaShoppingCart, FaBars } from "react-icons/fa";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
-  const { wishlist } = useContext(WishlistContext); // get wishlist from context
+  const { wishlist } = useContext(WishlistContext);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-  };
+  const handleLogout = () => logout();
+  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
+  // Total quantity in cart
+  const totalCartQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <>
@@ -79,9 +72,9 @@ const Navbar = () => {
                 {/* Cart Icon */}
                 <Link to="/cart" className="relative p-2 hover:text-red-400">
                   <FaShoppingCart size={20} />
-                  {cart.reduce((acc, item) => acc + item.quantity, 0) > 0 && (
+                  {totalCartQuantity > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs h-5 w-5 flex items-center justify-center rounded-full">
-                      {cart.reduce((acc, item) => acc + item.quantity, 0)}
+                      {totalCartQuantity}
                     </span>
                   )}
                 </Link>
@@ -92,9 +85,7 @@ const Navbar = () => {
                     onClick={() => setIsDropdownOpen((prev) => !prev)}
                     className="flex items-center space-x-1 focus:outline-none"
                   >
-                    <span className="text-sm font-medium">
-                      {user.name.split(" ")[0]}
-                    </span>
+                    <span className="text-sm font-medium">{user.name.split(" ")[0]}</span>
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -131,22 +122,14 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-
-                {/* Mobile User Icon */}
-                <Link to="/profile" className="md:hidden p-2 hover:text-red-400">
-                  <FaUser size={20} />
-                </Link>
               </>
             ) : (
               <>
-                <Link
-                  to="/cart"
-                  className="relative p-2 hover:text-red-400"
-                >
+                <Link to="/cart" className="relative p-2 hover:text-red-400">
                   <FaShoppingCart size={20} />
-                  {cart.reduce((acc, item) => acc + item.quantity, 0) > 0 && (
+                  {totalCartQuantity > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs h-5 w-5 flex items-center justify-center rounded-full">
-                      {cart.reduce((acc, item) => acc + item.quantity, 0)}
+                      {totalCartQuantity}
                     </span>
                   )}
                 </Link>
@@ -175,7 +158,7 @@ const Navbar = () => {
             className="fixed top-0 left-0 h-full w-64 bg-gray-900 shadow-xl z-50 transform transition-transform duration-300 ease-in-out"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Mobile Drawer content same as above, using wishlist.length */}
+            {/* Drawer content (links and icons) */}
           </div>
         </div>
       )}

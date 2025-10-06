@@ -1,72 +1,93 @@
-// src/services/api.js
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const api = axios.create({
   baseURL: "https://localhost:7056/api",
   headers: { "Content-Type": "application/json" },
-  withCredentials: true, //  send/receive cookies
+  withCredentials: true, // send cookies automatically
 });
 
-// Attach token before request
+// --------------------
+// Request interceptor
+// --------------------
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("token");
+    const token = JSON.parse(Cookies.get("user"));
+    console.log("➡️ API Request:", {
+      url: config.url,
+      method: config.method,
+      headers: config.headers,
+      data: config.data,
+    });
+
+    console.log(token);
+    
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token?.token}`;
     }
+   
     return config;
   },
-  (error) => Promise.reject(error)  
+  (error) => {
+    console.error("❌ API Request Error:", error);
+    return Promise.reject(error);
+  }
 );
 
-// Handle expired token (401) and auto-refresh
+// --------------------
+// Response interceptor automatic token refresh logic
+// --------------------
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
+    if (error) prom.reject(error);
+    else prom.resolve(token);
   });
-
   failedQueue = [];
 };
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(" API Response:", {
+      url: response.config.url,
+      status: response.status,
+      data: response.data,
+    });
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
+    console.error("❌ API Response Error:", {
+      url: originalRequest?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
 
+    // 401 handling with refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = "Bearer " + token;
-            return api(originalRequest);
-          })
+          .then(() => api(originalRequest))
           .catch((err) => Promise.reject(err));
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const res = await api.post("/auth/refresh"); // backend will read refreshToken from cookie
-        const newToken = res.data.token;
+        console.log(" Refreshing token...");
+        await api.post("/Auth/refresh", {}, { withCredentials: true });
+        console.log("✅ Token refreshed");
 
-        Cookies.set("token", newToken, { expires: 1 }); // keep new access token in cookie (1 day)
-
-        api.defaults.headers.common["Authorization"] = "Bearer " + newToken;
-        processQueue(null, newToken);
-
+        processQueue(null); // retry queued requests
         return api(originalRequest);
       } catch (err) {
+        console.error("❌ Token refresh failed:", err.response || err);
         processQueue(err, null);
         return Promise.reject(err);
       } finally {

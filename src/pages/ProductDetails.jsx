@@ -1,8 +1,8 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";   //  pagination support
+import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../services/api";
@@ -10,19 +10,20 @@ import { CartContext } from "../context/CartContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, user } = useContext(CartContext);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigator = useNavigate()
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await api.get(`/products/${id}`);
-        console.log("Product fetched:", res.data.data);
-        setProduct(res.data.data); // directly set the product object
+        setProduct(res.data.data);
       } catch (err) {
-        console.error("Failed to fetch product", err);
-        toast.error("Product not found!");
+        console.error(err);
+
+        toast.error("Product not found");
       } finally {
         setLoading(false);
       }
@@ -33,19 +34,15 @@ const ProductDetails = () => {
   if (loading) return <div className="p-6 text-center">Loading product...</div>;
   if (!product) return <div className="p-6 text-center">Product not found</div>;
 
-  // Function to render Base64 images with MIME detection
   const renderImage = (imgBase64) => {
-    if (!imgBase64) return "/placeholder-image.png"; // fallback placeholder
-    const isJPEG = imgBase64.startsWith("/9j/"); // JPEG detection
+    if (!imgBase64) return "/placeholder-image.png";
+    const isJPEG = imgBase64.startsWith("/9j/");
     const mimeType = isJPEG ? "jpeg" : "png";
     return `data:image/${mimeType};base64,${imgBase64}`;
   };
 
-  // Ensure images array exists
   const images =
-    product.imagesBase64 && product.imagesBase64.length > 0
-      ? product.imagesBase64
-      : [null]; // will show placeholder if no images
+    product.imagesBase64?.length > 0 ? product.imagesBase64 : [null];
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -58,7 +55,6 @@ const ProductDetails = () => {
             loop={true}
             pagination={{ clickable: true }}
             modules={[Pagination]}
-            className="rounded"
           >
             {images.map((img, idx) => (
               <SwiperSlide key={idx}>
@@ -82,21 +78,26 @@ const ProductDetails = () => {
             <p className="text-sm text-gray-600 mb-2">
               Category: {product.category}
             </p>
-
-            <div className="flex items-center mb-3">
-              <span className="text-yellow-400 text-lg">★★★★☆</span>
-              <span className="text-sm text-gray-600 ml-2">(4.0 / 5)</span>
-            </div>
-
             <p className="text-gray-700 mb-4">{product.description}</p>
           </div>
 
           <button
             type="button"
             className="bg-black text-white px-6 py-3 rounded hover:bg-red-600 mt-4"
-            onClick={() => {
-              addToCart(product);
-              toast.success("Added to cart!");
+            onClick={async () => {
+              try {
+                if (!user) {
+                  console.log("hhh");
+
+                  navigator("/login");
+                }
+                await addToCart(product.id, 1); // pass productId & quantity
+                toast.success("Added to cart!");
+              } catch (err) {
+                navigator("/login");
+                console.error(err);
+                toast.error("Failed to add to cart");
+              }
             }}
           >
             Add to Bag

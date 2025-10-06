@@ -10,8 +10,8 @@ const Orders = () => {
     const fetchOrders = async () => {
       if (!user?.id) return;
       try {
-        const res = await api.get(`/users/${user.id}`);
-        setOrders(res.data.orders || []);
+        const res = await api.get("/Order/user"); // backend endpoint
+        setOrders(res.data.data || []);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
       }
@@ -26,40 +26,55 @@ const Orders = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-center">My Orders</h2>
-      <img src="https://www.niviasports.com/cdn/shop/collections/Footwear_Category_banners_badminton1.webp?v=1722230838&width=1100" alt="order image" />
 
       <div className="space-y-6">
-        {orders.map((order, index) => (
-          <div key={order.id || index} className="border rounded-lg shadow p-4">
+        {orders.map((order) => (
+          <div key={order.id} className="border rounded-lg shadow p-4">
             <div className="mb-2 text-sm text-gray-500">
               <strong>Order ID:</strong> {order.id} |{" "}
-              <strong>Placed on:</strong> {order.time}
+              <strong>Placed on:</strong> {new Date(order.orderDate).toLocaleString()} |{" "}
+              <strong>Payment:</strong> {order.paymentMethod === 0 ? "Cash on Delivery" : "Online Payment"}
             </div>
             <div className="mb-2 text-sm">
               <strong>Shipping Address:</strong> {order.address}
             </div>
+            <div className="mb-2 text-sm">
+              <strong>Status:</strong>{" "}
+              <span
+                className={`font-semibold ${
+                  order.status === "Delivered"
+                    ? "text-green-600"
+                    : order.status === "Shipped"
+                    ? "text-orange-600"
+                    : order.status === "Pending"
+                    ? "text-yellow-600"
+                    : order.status === "PaymentInitiated"
+                    ? "text-blue-600"
+                    : "text-red-600"
+                }`}
+              >
+                {order.status}
+              </span>
+            </div>
 
             <div className="divide-y">
-              {(order.items || []).map((item, idx) => (
+              {(order.orderItems || []).map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-4">
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={item.image || "https://via.placeholder.com/150"}
+                      alt={item.productName}
                       className="w-16 h-16 object-contain rounded border"
                     />
                     <div>
-                      <h4 className="font-semibold">{item.name}</h4>
+                      <h4 className="font-semibold">{item.productName}</h4>
                       <p className="text-sm text-gray-600">
                         Qty: {item.quantity} | ₹{item.price} each
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-semibold">
-                      ₹{item.quantity * item.price}
-                    </div>
-                    <span className="text-xs text-green-600">{item.status}</span>
+                  <div className="text-right font-semibold">
+                    ₹{item.quantity * item.price}
                   </div>
                 </div>
               ))}
