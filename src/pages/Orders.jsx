@@ -11,8 +11,11 @@ const Orders = () => {
     try {
       const response = await api.get("/Order/user");
       console.log("🧩 Orders API response:", response.data);
+      const sortedOrders = response.data.data.sort(
+        (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+      );
 
-      setOrders(response.data.data); // Make sure backend sends OrderItems & TotalPrice
+      setOrders(sortedOrders); // Make sure backend sends OrderItems, TotalPrice, and Address
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch your orders");
@@ -62,15 +65,21 @@ const Orders = () => {
           className="border rounded-lg p-4 mb-5 shadow-sm bg-white"
         >
           {/* Order header */}
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex justify-between items-start mb-3">
             <div>
               <p className="font-semibold">
                 Order ID: <span className="text-gray-600">{order.id}</span>
               </p>
               <p className="text-sm text-gray-500">
-                Placed on:{" "}
-                {new Date(order.orderDate).toLocaleDateString("en-IN")}
+                Placed on: {new Date(order.orderDate).toLocaleDateString("en-IN")}
               </p>
+              {/* Show Address */}
+              {order.address && (
+                <p className="text-sm text-gray-700 mt-1">
+                  <span className="font-medium">Delivery Address: </span>
+                  {order.address}
+                </p>
+              )}
             </div>
             <div>
               <span
@@ -103,20 +112,23 @@ const Orders = () => {
                 >
                   <div className="flex items-center gap-3">
                     <img
-                      src={item.imageUrl || "/placeholder.png"}
+                      src={
+                        item.imagesBase64 && item.imagesBase64.length > 0
+                          ? `data:image/png;base64,${item.imagesBase64[0]}`
+                          : "/placeholder.png"
+                      }
                       alt={item.productName}
                       className="w-16 h-16 object-contain"
                     />
                     <div>
                       <p className="font-medium">{item.productName}</p>
                       <p className="text-sm text-gray-500">
-                       Qty: {item?.quantity ?? 0} × ₹{(item?.unitPrice ?? 0).toFixed(2)}
-
+                        Qty: {item.quantity} × ₹{item.price.toFixed(2)}
                       </p>
                     </div>
                   </div>
                   <p className="font-semibold">
-                    ₹{(item.quantity * item.unitPrice).toFixed(2)}
+                    ₹{(item.quantity * item.price).toFixed(2)}
                   </p>
                 </div>
               ))

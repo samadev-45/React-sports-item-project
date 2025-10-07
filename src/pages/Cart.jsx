@@ -12,6 +12,7 @@ const Cart = () => {
   const [itemToRemove, setItemToRemove] = useState(null);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(0); // 0 = COD, 1 = Online
+  const [address, setAddress] = useState(""); // <-- New state for delivery address
   const navigate = useNavigate();
 
   const handleRemove = (id) => {
@@ -25,6 +26,11 @@ const Cart = () => {
   };
 
   const handlePlaceOrder = async () => {
+    if (!address.trim()) {
+      toast.error("Please enter a delivery address!");
+      return;
+    }
+
     if (cart.length === 0) {
       toast.error("Your cart is empty!");
       return;
@@ -33,8 +39,8 @@ const Cart = () => {
     setLoading(true);
     try {
       const response = await api.post("/Order/user/create", {
-        address: "Default address or user’s saved address",
-        paymentMethod, // 0 = COD, 1 = Online
+        address: address.trim(), // <-- send the user-entered address
+        paymentMethod,
       });
 
       if (response.status === 200 || response.status === 201) {
@@ -71,16 +77,12 @@ const Cart = () => {
           </button>
         </div>
         <p className="mb-4 text-gray-600">
-          TOTAL ({summary.totalQuantity} item
-          {summary.totalQuantity > 1 ? "s" : ""}) ₹
+          TOTAL ({summary.totalQuantity} item{summary.totalQuantity > 1 ? "s" : ""}) ₹
           {summary.totalPrice.toFixed(2)}
         </p>
 
         {cart.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center justify-between border-t py-4"
-          >
+          <div key={item.id} className="flex items-center justify-between border-t py-4">
             <div className="flex items-center gap-4">
               <img
                 src={item.imageUrl || "/placeholder.png"}
@@ -129,6 +131,18 @@ const Cart = () => {
       {/* ORDER SUMMARY */}
       <div className="border p-6 rounded shadow h-fit">
         <h3 className="text-xl font-bold mb-4">ORDER SUMMARY</h3>
+
+        {/* Address Input */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Delivery Address:</label>
+          <textarea
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Enter your delivery address"
+            className="w-full border rounded px-3 py-2"
+            rows={3}
+          />
+        </div>
 
         <div className="flex justify-between text-sm mb-2">
           <span>{summary.totalQuantity} item(s)</span>

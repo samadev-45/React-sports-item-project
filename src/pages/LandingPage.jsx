@@ -2,23 +2,22 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 
-
 function LandingPage() {
   const [products, setProducts] = useState([]);
 
- useEffect(() => {
-  api
-    .get("/products")
-    .then((res) => {
-      const productsArray = res.data.data; //  get the actual array
-      setProducts(productsArray.slice(0, 4));
-    })
-    .catch((err) => console.error("Error fetching products", err));
-}, []);
-
+  useEffect(() => {
+    api
+      .get("/products")
+      .then((res) => {
+        const productsArray = res.data.data; // get the actual array
+        setProducts(productsArray.slice(0, 4));
+      })
+      .catch((err) => console.error("Error fetching products", err));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Hero section */}
       <section className="relative w-full h-screen max-h-[900px] bg-black overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent z-0 opacity-90"></div>
 
@@ -57,23 +56,9 @@ function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-          <svg
-            className="w-8 h-8 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            ></path>
-          </svg>
-        </div>
       </section>
 
+      {/* Featured Products */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
@@ -92,7 +77,11 @@ function LandingPage() {
             >
               <div className="aspect-square bg-gray-100 flex items-center justify-center p-4">
                 <img
-                  src={product.image}
+                  src={
+                    product.imagesBase64 && product.imagesBase64.length > 0
+                      ? `data:image/png;base64,${product.imagesBase64[0]}`
+                      : product.image || "/placeholder-image.png"
+                  }
                   alt={product.name}
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
@@ -131,6 +120,7 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Join the Movement */}
       <section className="py-16 px-4 sm:px-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">
@@ -153,6 +143,7 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="bg-black text-white px-4 sm:px-6 py-12">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -320,9 +311,7 @@ function LandingPage() {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
-            © 2025 SportsStore. All rights reserved.
-          </p>
+          <p className="text-gray-400 text-sm">© 2025 SportsStore. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link
               to="/privacy"

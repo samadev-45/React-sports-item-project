@@ -55,7 +55,6 @@ const AdminOrders = () => {
       const numericId = parseInt(orderId.replace("order_", ""), 10);
       await api.put(`/admin/orders/${numericId}/deliver`);
       toast.success("Order marked as delivered");
-      
       fetchOrders();
     } catch (err) {
       console.error(err);
@@ -64,9 +63,19 @@ const AdminOrders = () => {
   };
 
   // -----------------------------
-  // Filtered orders for frontend
+  // Update order status via dropdown
   // -----------------------------
-  const filteredOrders = orders; // backend already supports search/status
+  const updateOrderStatus = async (orderId, statusValue) => {
+    try {
+      const numericId = parseInt(orderId.replace("order_", ""), 10);
+      await api.put(`/admin/orders/${numericId}/status`, { status: statusValue });
+      toast.success(`Order status updated to ${statusValue}`);
+      fetchOrders();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update order status");
+    }
+  };
 
   // -----------------------------
   // Render
@@ -91,19 +100,20 @@ const AdminOrders = () => {
         >
           <option value="All">All Statuses</option>
           <option value="Pending">Pending</option>
+          <option value="Shipped">Shipped</option>
           <option value="Delivered">Delivered</option>
         </select>
       </div>
 
       {loading ? (
         <p>Loading orders...</p>
-      ) : filteredOrders.length === 0 ? (
+      ) : orders.length === 0 ? (
         <p>No orders found.</p>
       ) : (
         <>
           {/* Mobile Card View */}
           <div className="block md:hidden space-y-4">
-            {filteredOrders.map((order) => (
+            {orders.map((order) => (
               <div
                 key={order.orderId}
                 className="bg-white border rounded-lg p-4 shadow-sm"
@@ -135,12 +145,25 @@ const AdminOrders = () => {
                   ))}
                 </div>
                 {order.status !== "Delivered" && (
-                  <button
-                    onClick={() => markAsDelivered(order.orderId)}
-                    className="mt-3 bg-blue-600 text-white px-3 py-1 text-xs rounded hover:bg-blue-700"
-                  >
-                    Mark Delivered
-                  </button>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={() => markAsDelivered(order.orderId)}
+                      className="bg-blue-600 text-white px-3 py-1 text-xs rounded hover:bg-blue-700"
+                    >
+                      Mark Delivered
+                    </button>
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        updateOrderStatus(order.orderId, parseInt(e.target.value))
+                      }
+                      className="border border-gray-300 rounded px-2 py-1 text-xs"
+                    >
+                      <option value={1}>Pending</option>
+                      <option value={2}>Shipped</option>
+                      <option value={3}>Delivered</option>
+                    </select>
+                  </div>
                 )}
               </div>
             ))}
@@ -161,7 +184,7 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
-                {filteredOrders.map((order) => (
+                {orders.map((order) => (
                   <tr key={order.orderId} className="hover:bg-gray-50 transition">
                     <td className="px-4 py-3 border font-mono text-xs text-gray-600">
                       {order.orderId}
@@ -191,14 +214,25 @@ const AdminOrders = () => {
                         {order.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 border">
+                    <td className="px-4 py-3 border flex gap-2">
                       {order.status !== "Delivered" && (
-                        <button
-                          onClick={() => markAsDelivered(order.orderId)}
-                          className="bg-blue-600 text-white px-3 py-1 text-xs rounded shadow hover:bg-blue-700"
-                        >
-                          Mark Delivered
-                        </button>
+                        <>
+                          <button
+                            onClick={() => markAsDelivered(order.orderId)}
+                            className="bg-blue-600 text-white px-3 py-1 text-xs rounded shadow hover:bg-blue-700"
+                          >
+                            Mark Delivered
+                          </button>
+                          <select
+                            value={order.status === "Pending" ? 1 : order.status === "Shipped" ? 2 : 3}
+                            onChange={(e) => updateOrderStatus(order.orderId, parseInt(e.target.value))}
+                            className="border border-gray-300 rounded px-2 py-1 text-xs"
+                          >
+                            <option value={1}>Pending</option>
+                            <option value={2}>Shipped</option>
+                            <option value={3}>Delivered</option>
+                          </select>
+                        </>
                       )}
                     </td>
                   </tr>
