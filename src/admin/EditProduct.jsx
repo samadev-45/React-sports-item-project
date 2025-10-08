@@ -13,21 +13,22 @@ const EditProduct = () => {
   const [newImages, setNewImages] = useState([]);
 
   // Fetch product details
+  const fetchProduct = async () => {
+    try {
+      const res = await api.get(`/products/${id}`);
+      const data = res.data.data;
+      setProduct(data);
+      setName(data.name);
+      setPrice(data.price);
+      setCategory(data.category);
+      setDescription(data.description);
+    } catch (err) {
+      console.error("Fetch product error:", err);
+      toast.error("Failed to load product");
+    }
+  };
+
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await api.get(`/products/${id}`);
-        const data = res.data.data;
-        setProduct(data);
-        setName(data.name);
-        setPrice(data.price);
-        setCategory(data.category);
-        setDescription(data.description);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load product");
-      }
-    };
     fetchProduct();
   }, [id]);
 
@@ -36,18 +37,26 @@ const EditProduct = () => {
     setNewImages(Array.from(e.target.files));
   };
 
-  // Remove an existing image
-  const handleDeleteImage = async (imageId) => {
+  // Remove an existing image by index
+  const handleDeleteImage = async (index) => {
     try {
+      const imageId = product.imagesIds?.[index]; // If your backend provides IDs
+      if (!imageId) {
+        toast.error("Cannot delete this image");
+        return;
+      }
+
       await api.delete(`/products/${id}/images/${imageId}`);
       toast.success("Image deleted successfully!");
+
       // Update UI
       setProduct({
         ...product,
-        ImagesBase64: product.ImagesBase64.filter((_, idx) => idx !== imageId),
+        imagesBase64: product.imagesBase64.filter((_, idx) => idx !== index),
+        imagesIds: product.imagesIds.filter((_, idx) => idx !== index),
       });
     } catch (err) {
-      console.error(err);
+      console.error("Delete image error:", err);
       toast.error("Failed to delete image");
     }
   };
@@ -71,15 +80,14 @@ const EditProduct = () => {
 
       toast.success("Product updated successfully!");
       setNewImages([]);
+      fetchProduct(); // Refresh product to show new images
     } catch (err) {
-      console.error(err);
+      console.error("Update product error:", err);
       toast.error("Failed to update product");
     }
   };
 
-  if (!product) {
-    return <div className="p-6 text-center">Loading product...</div>;
-  }
+  if (!product) return <div className="p-6 text-center">Loading product...</div>;
 
   return (
     <div className="max-w-3xl mx-auto mt-8 p-6 bg-white rounded shadow">
@@ -115,7 +123,7 @@ const EditProduct = () => {
 
         {/* Existing Images */}
         <div className="flex flex-wrap gap-2 mt-2">
-          {product.ImagesBase64.map((imgBase64, idx) => (
+          {product.imagesBase64?.map((imgBase64, idx) => (
             <div key={idx} className="relative">
               <img
                 src={`data:image/jpeg;base64,${imgBase64}`}

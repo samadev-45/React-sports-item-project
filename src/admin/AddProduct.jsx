@@ -5,13 +5,18 @@ import api from "../services/api";
 const AddProduct = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Cricket");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
-  // Handle multiple file selection
+  // Handle multiple file selection and preview
   const handleFileChange = (e) => {
-    setImages(Array.from(e.target.files));
+    const files = Array.from(e.target.files);
+    setImages(files);
+
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews(previews);
   };
 
   const handleSubmit = async (e) => {
@@ -30,21 +35,21 @@ const AddProduct = () => {
       formData.append("Description", description);
 
       // Append multiple images
-      images.forEach((img) => {
-        formData.append("Images", img);
-      });
+      images.forEach((img) => formData.append("Images", img));
 
-      const res = await api.post("/products", formData, {
+      await api.post("/products", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       toast.success("Product added successfully!");
+
       // Reset form
       setName("");
       setPrice("");
-      setCategory("");
+      setCategory("Cricket");
       setDescription("");
       setImages([]);
+      setImagePreviews([]);
     } catch (err) {
       console.error(err);
       toast.error("Failed to add product. Check console for details.");
@@ -69,13 +74,17 @@ const AddProduct = () => {
           onChange={(e) => setPrice(e.target.value)}
           className="border px-3 py-2 rounded"
         />
-        <input
-          type="text"
-          placeholder="Category"
+        <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           className="border px-3 py-2 rounded"
-        />
+        >
+          <option value="Football">Football</option>
+          <option value="Cricket">Cricket</option>
+          <option value="Basketball">Basketball</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Socks">Socks</option>
+        </select>
         <textarea
           placeholder="Description"
           value={description}
@@ -88,15 +97,21 @@ const AddProduct = () => {
           onChange={handleFileChange}
           className="border px-3 py-2 rounded"
         />
-        {images.length > 0 && (
+
+        {/* Preview selected images */}
+        {imagePreviews.length > 0 && (
           <div className="flex gap-2 mt-2 flex-wrap">
-            {images.map((img, idx) => (
-              <span key={idx} className="text-sm bg-gray-200 px-2 py-1 rounded">
-                {img.name}
-              </span>
+            {imagePreviews.map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt={`preview-${idx}`}
+                className="w-20 h-20 object-cover rounded border"
+              />
             ))}
           </div>
         )}
+
         <button
           type="submit"
           className="bg-black text-white py-2 rounded hover:bg-gray-800 mt-2"

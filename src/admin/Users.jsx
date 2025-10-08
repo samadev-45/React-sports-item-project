@@ -22,9 +22,10 @@ const Users = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const res = await api.get("/users");
-      const filtered = res.data.filter((u) => u.role === "user");
-      setUsers(filtered);
+      const res = await api.get("/Admin/users");
+      // backend wraps inside ApiResponse
+      const data = res.data.data || [];
+      setUsers(data);
     } catch (err) {
       toast.error("Failed to load users");
     } finally {
@@ -33,20 +34,20 @@ const Users = () => {
   };
 
   const handleConfirm = async () => {
+    if (!selectedUser) return;
     try {
-      await api.patch(`/users/${selectedUser.id}`, {
-        isBlock: !selectedUser.isBlock,
-      });
+      await api.put(`/Admin/users/${selectedUser.id}/toggle-status`);
       toast.success(
         `User ${selectedUser.name} has been ${
-          selectedUser.isBlock ? "unblocked" : "blocked"
+          selectedUser.isBlocked ? "unblocked" : "blocked"
         }`
       );
       fetchUsers();
     } catch (err) {
-      toast.error("Error updating user");
+      toast.error("Error updating user status");
     } finally {
       setSelectedUser(null);
+      setIsModalOpen(false);
     }
   };
 
@@ -62,13 +63,18 @@ const Users = () => {
 
   return (
     <div className="p-4 sm:p-6">
-      {/* Top Section */}
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">User Management</h2>
-          <p className="text-gray-600 text-sm sm:text-base">Manage all registered users</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+            User Management
+          </h2>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Manage all registered users
+          </p>
         </div>
 
+        {/* Search */}
         <div className="relative w-full md:w-64">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <FiSearch className="text-gray-400" />
@@ -83,7 +89,7 @@ const Users = () => {
         </div>
       </div>
 
-      {/* Table Section */}
+      {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
         {isLoading ? (
           <div className="flex justify-center items-center p-12">
@@ -125,24 +131,21 @@ const Users = () => {
                         <div className="text-sm font-medium text-gray-900">
                           {user.name}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          Joined: {new Date(user.createdAt).toLocaleDateString()}
-                        </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 break-words">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {user.email}
                   </td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.isBlock
+                        user.isBlocked
                           ? "bg-red-100 text-red-800"
                           : "bg-green-100 text-green-800"
                       }`}
                     >
-                      {user.isBlock ? "Blocked" : "Active"}
+                      {user.isBlocked ? "Blocked" : "Active"}
                     </span>
                   </td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center text-sm">
@@ -153,12 +156,12 @@ const Users = () => {
                           setIsModalOpen(true);
                         }}
                         className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium ${
-                          user.isBlock
+                          user.isBlocked
                             ? "bg-green-100 text-green-700 hover:bg-green-200"
                             : "bg-red-100 text-red-700 hover:bg-red-200"
                         } transition`}
                       >
-                        {user.isBlock ? (
+                        {user.isBlocked ? (
                           <>
                             <FiUnlock className="mr-1" /> Unblock
                           </>
@@ -216,7 +219,7 @@ const Users = () => {
         }}
         onConfirm={handleConfirm}
         message={`Are you sure you want to ${
-          selectedUser?.isBlock ? "unblock" : "block"
+          selectedUser?.isBlocked ? "unblock" : "block"
         } ${selectedUser?.name}?`}
       />
     </div>
