@@ -15,11 +15,7 @@ const EditProduct = () => {
   // Fetch product details
   const fetchProduct = async () => {
     try {
-      console.log(`Fetching product with ID: ${id}...`);
       const res = await api.get(`/Products/${id}`);
-      console.log("Fetch product response:", res.data);
-
-      // Handle array response
       const dataArray = res.data.data;
       const data = Array.isArray(dataArray) ? dataArray[0] : dataArray;
 
@@ -29,13 +25,10 @@ const EditProduct = () => {
         imagesIds: data.imagesIds || [],
       });
 
-      // Prefill form fields
       setName(data.name || "");
       setPrice(data.price || "");
       setCategory(data.category || "");
       setDescription(data.description || "");
-
-      console.log("Product state updated with fetched data.");
     } catch (err) {
       console.error("Fetch product error:", err.response || err);
       toast.error("Failed to load product");
@@ -49,7 +42,6 @@ const EditProduct = () => {
   // Handle new image selection
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    console.log("Selected new images:", files);
     setNewImages([...newImages, ...files]);
   };
 
@@ -62,8 +54,7 @@ const EditProduct = () => {
         return;
       }
 
-      const res = await api.delete(`/Products/${id}/images/${imageId}`);
-      console.log("Delete image response:", res.data);
+      await api.delete(`/Products/${id}/images/${imageId}`);
       toast.success("Image deleted successfully!");
 
       setProduct({
@@ -88,25 +79,21 @@ const EditProduct = () => {
       formData.append("Category", category);
       formData.append("Description", description);
 
-      // Keep existing images
-      product.imagesIds?.forEach((imgId) =>
-        formData.append("ExistingImagesIds", imgId)
+      // Append existing image IDs if your backend requires it
+      product.imagesIds?.forEach((id) =>
+        formData.append("ExistingImagesIds", id)
       );
 
-      // Add new images
-      newImages.forEach((img) => formData.append("Images", img));
+      // Append new images
+      newImages.forEach((file) => formData.append("Images", file));
 
-      console.log("FormData before submit:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      const res = await api.put(`/Products/${id}`, formData);
-      console.log("Update product response:", res.data);
+      const res = await api.put(`/Products/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       toast.success("Product updated successfully!");
       setNewImages([]);
-      fetchProduct(); // Refresh product to show updated data and images
+      fetchProduct(); // Refresh updated product
     } catch (err) {
       console.error("Update product error:", err.response || err);
       toast.error("Failed to update product");
@@ -168,7 +155,7 @@ const EditProduct = () => {
           ))}
         </div>
 
-        {/* Add new images */}
+        {/* Add New Images */}
         <input
           type="file"
           multiple
@@ -178,10 +165,7 @@ const EditProduct = () => {
         {newImages.length > 0 && (
           <div className="flex gap-2 mt-2 flex-wrap">
             {newImages.map((img, idx) => (
-              <span
-                key={idx}
-                className="text-sm bg-gray-200 px-2 py-1 rounded"
-              >
+              <span key={idx} className="text-sm bg-gray-200 px-2 py-1 rounded">
                 {img.name}
               </span>
             ))}
