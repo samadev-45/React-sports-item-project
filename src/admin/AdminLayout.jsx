@@ -1,17 +1,16 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useAdmin } from "../context/AdminContext";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { AuthContext } from "../context/MyContext";
 
 const AdminLayout = () => {
-  const { admin, setAdmin } = useAdmin();
+  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const logout = () => {
-    setAdmin(null);
-    localStorage.removeItem("adminId");
+    setUser(null); // clear user context
     toast.success("Logged out successfully!");
     navigate("/login");
   };
@@ -67,6 +66,7 @@ const AdminLayout = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       
+      {/* Mobile Header */}
       <div className="md:hidden bg-gray-900 text-white flex items-center justify-between p-4 shadow-md">
         <h2 className="text-xl font-bold">Sporty Admin</h2>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -87,7 +87,7 @@ const AdminLayout = () => {
         </div>
       )}
 
-      {/* Sidebar for Desktop */}
+      {/* Desktop Sidebar */}
       <aside className="hidden md:flex md:w-64 bg-gradient-to-b from-gray-900 to-gray-800 shadow-xl p-5 flex-col">
         <div className="flex items-center mb-8">
           <div className="bg-red-500 p-2 rounded-lg mr-3">
@@ -104,10 +104,10 @@ const AdminLayout = () => {
         <div className="mt-auto pt-4 border-t border-gray-700">
           <div className="flex items-center mb-4">
             <div className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
-              {admin?.name?.charAt(0) || 'A'}
+              {user?.name?.charAt(0) || 'A'}
             </div>
             <div>
-              <p className="text-white font-medium">{admin?.name || "Admin"}</p>
+              <p className="text-white font-medium">{user?.name || "Admin"}</p>
               <p className="text-gray-400 text-sm">Administrator</p>
             </div>
           </div>
@@ -125,7 +125,7 @@ const AdminLayout = () => {
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
-              Welcome back, <span className="text-red-600">{admin?.name || "Admin"}</span>
+              Welcome back, <span className="text-red-600">{user?.name || "Admin"}</span>
             </h1>
             <div className="text-sm text-gray-500">
               {new Date().toLocaleDateString('en-US', {

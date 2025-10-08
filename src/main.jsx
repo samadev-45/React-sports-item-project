@@ -8,22 +8,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/MyContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
-import { AdminProvider } from "./context/AdminContext";
-
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    
-      <AdminProvider>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <App />
-              <ToastContainer position="center" autoClose={2000} />
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
-      </AdminProvider>
-    
+    <AuthProvider>
+      <CartProvider>
+        <WishlistProvider>
+          <App />
+          <ToastContainer position="top-right" autoClose={2000} newestOnTop/>
+        </WishlistProvider>
+      </CartProvider>
+    </AuthProvider>
   </StrictMode>
 );

@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined);
     useEffect(() => {
     const savedUser = Cookies.get("user");
     if (savedUser) {
@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
             token: userData.token
           })
         );
+        setUser(userData);
         toast.success(res.data.message || "Login successful!");
         return { success: true, data: userData };
       } else {

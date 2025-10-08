@@ -40,81 +40,244 @@ const Cart = () => {
     paymentMethod: Yup.number().required("Please select a payment method"),
   });
 
-  const handlePlaceOrder = async (values) => {
-    if (cart.length === 0) {
-      toast.error("Your cart is empty!");
+  // const handlePlaceOrder = async (values) => {
+  //   if (cart.length === 0) {
+  //     toast.error("Your cart is empty!");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     // 1️⃣ Create order on backend
+  //     const response = await api.post("/Order/user/create", {
+  //       address: values.address.trim(),
+  //       paymentMethod: Number(values.paymentMethod),
+  //     });
+
+  //     const order = response?.data?.data;
+  //     const orderId = order?.id;
+  //     const orderAmount = order?.totalPrice;
+  //     const razorpayOrderId = order?.paymentId; // Must be returned from backend
+
+  //     // 2️⃣ Online payment
+  //     if (values.paymentMethod === 1) {
+  //       const ok = await loadRazorpayScript();
+       
+
+  //       if (!ok) {
+  //         toast.error("Failed to load payment SDK.");
+  //         return;
+  //       }
+
+  //       const options = {
+  //         key: import.meta.env.VITE_RAZORPAY_KEY,
+  //         amount: Math.round(orderAmount * 100),
+  //         currency: "INR",
+  //         name: "Your Shop Name",
+  //         description: "Order Payment",
+  //         order_id: razorpayOrderId,
+  //         handler: async function (response) {
+  //           try {
+  //             await api.post("/Order/verify-payment", {
+  //               OrderId: orderId,
+  //               RazorpayOrderId: response.razorpay_order_id,
+  //               RazorpayPaymentId: response.razorpay_payment_id,
+  //               RazorpaySignature: response.razorpay_signature,
+  //             });
+  //             toast.success("🎉 Payment successful! Order placed.");
+  //             clearCart();
+  //             navigate(`/order-success/${orderId}`);
+  //           } catch (err) {
+  //             console.error("Payment verification failed:", err);
+  //             toast.error("Payment verification failed. Contact support.");
+  //           }
+  //         },
+  //         prefill: {
+  //           name: values.name,
+  //           email: values.email,
+  //           contact: values.phone,
+  //         },
+  //         theme: { color: "#F472B6" },
+  //       };
+
+  //       const rzp = new window.Razorpay(options);
+  //       rzp.open();
+  //     } else {
+  //       // COD
+  //       toast.success("✅ Order placed successfully! (COD)");
+  //       clearCart();
+  //       navigate(`/order-success/${orderId}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error placing order:", error);
+  //     toast.error("Failed to place order.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+//   const handlePlaceOrder = async (values) => {
+//   if (cart.length === 0) {
+//     toast.error("Your cart is empty!");
+//     return;
+//   }
+
+//   setLoading(true);
+
+//   try {
+//     // 1️⃣ Create order on backend
+//     const response = await api.post("/Order/user/create", {
+//       address: values.address.trim(),
+//       paymentMethod: Number(values.paymentMethod),
+//     });
+
+//     const order = response?.data?.data;
+//     const orderId = order?.id;
+//     const orderAmount = order?.totalPrice;
+//     const razorpayOrderId = order?.paymentId; // returned from backend
+
+//     // 2️⃣ Online payment
+//     if (values.paymentMethod === 1) {
+//       const ok = await loadRazorpayScript();
+//       if (!ok) {
+//         toast.error("Failed to load payment SDK.");
+//         setLoading(false);
+//         return;
+//       }
+
+//       const options = {
+//         key: import.meta.env.VITE_RAZORPAY_KEY,
+//         amount: Math.round(orderAmount * 100),
+//         currency: "INR",
+//         name: "Your Shop Name",
+//         description: "Order Payment",
+//         order_id: razorpayOrderId,
+//         handler: async function (response) {
+//           try {
+//             // Verify payment on backend
+//             await api.post("/Order/verify-payment", {
+//               OrderId: orderId,
+//               RazorpayOrderId: response.razorpay_order_id,
+//               RazorpayPaymentId: response.razorpay_payment_id,
+//               RazorpaySignature: response.razorpay_signature,
+//             });
+
+//             // ✅ Clear cart AFTER successful payment verification
+//             clearCart();
+
+//             toast.success("🎉 Payment successful! Order placed.");
+//             navigate(`/order-success/${orderId}`);
+//           } catch (err) {
+//             console.error("Payment verification failed:", err);
+//             toast.error("Payment verification failed. Contact support.");
+//           }
+//         },
+//         prefill: {
+//           name: values.name,
+//           email: values.email,
+//           contact: values.phone,
+//         },
+//         theme: { color: "#F472B6" },
+//       };
+
+//       const rzp = new window.Razorpay(options);
+//       rzp.open();
+//     } else {
+//       // COD
+//       clearCart(); 
+//       toast.success("✅ Order placed successfully! (COD)");
+//       navigate(`/order-success/${orderId}`);
+//     }
+//   } catch (error) {
+//     console.error("Error placing order:", error);
+//     toast.error("Failed to place order.");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+const handlePlaceOrder = async (values) => {
+  if (cart.length === 0) {
+    toast.error("Your cart is empty!");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // 1️⃣ Create order on backend
+    const response = await api.post("/Order/user/create", {
+      address: values.address.trim(),
+      paymentMethod: Number(values.paymentMethod),
+    });
+
+    const order = response?.data?.data;
+    const orderId = order?.id;
+    const orderAmount = order?.totalPrice;
+    const razorpayOrderId = order?.paymentId; // backend Razorpay order id
+
+    // 2️⃣ COD
+    if (values.paymentMethod === 0) {
+      clearCart(); // Clear cart immediately
+      toast.success("✅ Order placed successfully! (COD)");
+      navigate(`/order-success/${orderId}`);
       return;
     }
 
-    setLoading(true);
-    try {
-      // 1️⃣ Create order on backend
-      const response = await api.post("/Order/user/create", {
-        address: values.address.trim(),
-        paymentMethod: Number(values.paymentMethod),
-      });
-
-      const order = response?.data?.data;
-      const orderId = order?.id;
-      const orderAmount = order?.totalPrice;
-      const razorpayOrderId = order?.paymentId; // Must be returned from backend
-
-      // 2️⃣ Online payment
-      if (values.paymentMethod === 1) {
-        const ok = await loadRazorpayScript();
-       
-
-        if (!ok) {
-          toast.error("Failed to load payment SDK.");
-          return;
-        }
-
-        const options = {
-          key: import.meta.env.VITE_RAZORPAY_KEY,
-          amount: Math.round(orderAmount * 100),
-          currency: "INR",
-          name: "Your Shop Name",
-          description: "Order Payment",
-          order_id: razorpayOrderId,
-          handler: async function (response) {
-            try {
-              await api.post("/Order/verify-payment", {
-                OrderId: orderId,
-                RazorpayOrderId: response.razorpay_order_id,
-                RazorpayPaymentId: response.razorpay_payment_id,
-                RazorpaySignature: response.razorpay_signature,
-              });
-              toast.success("🎉 Payment successful! Order placed.");
-              clearCart();
-              navigate(`/order-success/${orderId}`);
-            } catch (err) {
-              console.error("Payment verification failed:", err);
-              toast.error("Payment verification failed. Contact support.");
-            }
-          },
-          prefill: {
-            name: values.name,
-            email: values.email,
-            contact: values.phone,
-          },
-          theme: { color: "#F472B6" },
-        };
-
-        const rzp = new window.Razorpay(options);
-        rzp.open();
-      } else {
-        // COD
-        toast.success("✅ Order placed successfully! (COD)");
-        clearCart();
-        navigate(`/order-success/${orderId}`);
-      }
-    } catch (error) {
-      console.error("Error placing order:", error);
-      toast.error("Failed to place order.");
-    } finally {
+    // 3️⃣ Online Payment
+    const ok = await loadRazorpayScript();
+    if (!ok) {
+      toast.error("Failed to load payment SDK.");
       setLoading(false);
+      return;
     }
-  };
+
+    // Razorpay options
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY,
+      amount: Math.round(orderAmount * 100),
+      currency: "INR",
+      name: "Your Shop Name",
+      description: "Order Payment",
+      order_id: razorpayOrderId,
+      handler: async function (response) {
+        try {
+          // Verify payment on backend
+          await api.post("/Order/user/verify-payment", {
+            OrderId: orderId,
+            RazorpayOrderId: response.razorpay_order_id,
+            RazorpayPaymentId: response.razorpay_payment_id,
+            RazorpaySignature: response.razorpay_signature,
+          });
+
+          // ✅ Clear cart and navigate AFTER verification
+          clearCart();
+          toast.success("🎉 Payment successful! Order placed.");
+          navigate('/Orders');
+        } catch (err) {
+          console.error("Payment verification failed:", err);
+          toast.error("Payment verification failed. Contact support.");
+        }
+      },
+      prefill: {
+        name: values.name,
+        email: values.email,
+        contact: values.phone,
+      },
+      theme: { color: "#F472B6" },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+
+  } catch (error) {
+    console.error("Error placing order:", error);
+    toast.error("Failed to place order.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   if (cart.length === 0)
     return <h1 className="text-center text-2xl font-semibold text-gray-700 mt-10">🛒 Your cart is empty.</h1>;

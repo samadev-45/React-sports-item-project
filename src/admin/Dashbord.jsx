@@ -229,7 +229,7 @@ const Dashboard = () => {
     <div className="p-6 space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DashboardCard title="Total Users" value={stats.users} icon="👥" color="bg-blue-100" />
+        <DashboardCard title="Total Users" value={stats.users} icon="" color="bg-blue-100" />
         <DashboardCard title="Total Orders" value={stats.orders} icon="📦" color="bg-green-100" />
         <DashboardCard title="Total Products" value={stats.products} icon="🏀" color="bg-purple-100" />
         <DashboardCard title="Total Revenue" value={`₹${stats.revenue.toLocaleString()}`} icon="💰" color="bg-yellow-100" />

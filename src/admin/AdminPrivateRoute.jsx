@@ -1,11 +1,18 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { useAdmin } from "../context/AdminContext";
+import { AuthContext } from "../context/MyContext";
 
 const AdminPrivateRoute = ({ children }) => {
-  const { admin,loading } = useAdmin();
-  if (loading) return null; 
+  const { user, loading } = useContext(AuthContext);
 
-  return admin ? children : <Navigate to="/login" />;
+   if (user === undefined) return null; // or a loader
+
+  // check if logged in and role is admin
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 };
 
 export default AdminPrivateRoute;
