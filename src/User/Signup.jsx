@@ -34,20 +34,26 @@ const Signup = () => {
 
     if (res.success) {
       toast.success(res.message);
-      navigate("/login"); // only redirect on success
-    } else if (res.exists) {
+      // ✅ Redirect only when registration is successful
+      setTimeout(() => navigate("/login"), 1500);
+    } 
+    else if (res.exists) {
+      // ✅ Email already exists → show toast, stay on page
       toast.warning(res.message);
-      navigate("/login"); // redirect to login if email exists
-    } else {
+      // ❌ Do NOT navigate
+    } 
+    else {
+      // ✅ Other errors
       toast.error(res.message);
     }
   } catch (err) {
     toast.error("Something went wrong!");
     console.error(err);
   } finally {
-    setSubmitting(false); // reset form state
+    setSubmitting(false);
   }
 };
+
 
 
   return (

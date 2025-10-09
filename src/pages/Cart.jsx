@@ -219,7 +219,7 @@ const handlePlaceOrder = async (values) => {
     if (values.paymentMethod === 0) {
       clearCart(); // Clear cart immediately
       toast.success("✅ Order placed successfully! (COD)");
-      navigate(`/order-success/${orderId}`);
+      navigate('/Orders');
       return;
     }
 

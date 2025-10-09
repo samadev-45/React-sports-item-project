@@ -16,6 +16,7 @@ const EditProduct = () => {
   const fetchProduct = async () => {
     try {
       const res = await api.get(`/Products/${id}`);
+      console.log(res.data)
       const dataArray = res.data.data;
       const data = Array.isArray(dataArray) ? dataArray[0] : dataArray;
 
@@ -46,59 +47,70 @@ const EditProduct = () => {
   };
 
   // Remove an existing image
-  const handleDeleteImage = async (index) => {
-    try {
-      const imageId = product.imagesIds?.[index];
-      if (!imageId) {
-        toast.error("Cannot delete this image");
-        return;
-      }
+const handleDeleteImage = async (index) => {
+  try {
+    const imageId = product.imagesIds?.[index];
+    console.log(imageId)
+    if (!imageId) {
+      toast.error("Cannot delete this image");
+      return;
+    }
 
-      await api.delete(`/Products/${id}/images/${imageId}`);
+    const res = await api.delete(`/Products/${id}/images/${imageId}`);
+
+    if (res.status === 200 || res.status === 204) {
       toast.success("Image deleted successfully!");
 
-      setProduct({
-        ...product,
-        imagesBase64: product.imagesBase64.filter((_, idx) => idx !== index),
-        imagesIds: product.imagesIds.filter((_, idx) => idx !== index),
-      });
-    } catch (err) {
-      console.error("Delete image error:", err.response || err);
-      toast.error("Failed to delete image");
+      setProduct((prev) => ({
+        ...prev,
+        imagesBase64: prev.imagesBase64.filter((_, i) => i !== index),
+        imagesIds: prev.imagesIds.filter((_, i) => i !== index),
+      }));
+    } else {
+      toast.error("Server did not confirm deletion");
     }
-  };
+  } catch (err) {
+    console.error("Delete image error:", err.response || err);
+    toast.error(err.response?.data?.message || "Failed to delete image");
+  }
+};
+
 
   // Submit updated product
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const formData = new FormData();
-      formData.append("Name", name);
-      formData.append("Price", price);
-      formData.append("Category", category);
-      formData.append("Description", description);
+  try {
+    const formData = new FormData();
+    formData.append("Name", name);
+    formData.append("Price", price);
+    formData.append("Category", category);
+    formData.append("Description", description);
 
-      // Append existing image IDs if your backend requires it
-      product.imagesIds?.forEach((id) =>
-        formData.append("ExistingImagesIds", id)
-      );
+    // Send existing image IDs (only remaining ones)
+    product.imagesIds?.forEach((id) =>
+      formData.append("ExistingImagesIds", id)
+    );
 
-      // Append new images
-      newImages.forEach((file) => formData.append("Images", file));
+    // Send new images
+    newImages.forEach((file) => formData.append("Images", file));
 
-      const res = await api.put(`/Products/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    // Debug: check FormData
+    // for (let pair of formData.entries()) console.log(pair[0], pair[1]);
 
-      toast.success("Product updated successfully!");
-      setNewImages([]);
-      fetchProduct(); // Refresh updated product
-    } catch (err) {
-      console.error("Update product error:", err.response || err);
-      toast.error("Failed to update product");
-    }
-  };
+    const res = await api.put(`/Products/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    toast.success("Product updated successfully!");
+    setNewImages([]);
+    fetchProduct(); // Refresh product
+  } catch (err) {
+    console.error("Update product error:", err.response || err);
+    toast.error("Failed to update product");
+  }
+};
+
 
   if (!product)
     return <div className="p-6 text-center">Loading product...</div>;

@@ -58,21 +58,26 @@ function App() {
           }
         />
         <Route
-          path="/cart"
-          element={
-            <Layout>
-              <Cart />
-            </Layout>
-          }
-        />
-        <Route
-          path="/wishlist"
-          element={
-            <Layout>
-              <Wishlist />
-            </Layout>
-          }
-        />
+  path="/cart"
+  element={
+    <PrivateRoute>
+      <Layout>
+        <Cart />
+      </Layout>
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/wishlist"
+  element={
+    <PrivateRoute>
+      <Layout>
+        <Wishlist />
+      </Layout>
+    </PrivateRoute>
+  }
+/>
+
 
         {/* Private Routes (User) */}
         <Route

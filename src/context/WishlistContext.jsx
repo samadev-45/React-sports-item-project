@@ -27,7 +27,7 @@ export const WishlistProvider = ({ children }) => {
       setWishlist(res.data.data || []);
     } catch (err) {
       console.error("❌ Failed to fetch wishlist:", err);
-      toast.error("Failed to load wishlist");
+      // toast.error("Failed to load wishlist");
     } finally {
       setLoading(false);
     }
